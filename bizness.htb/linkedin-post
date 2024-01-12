@@ -1,0 +1,32 @@
+🚀 Just achieved root on Bizness HTB Machine! 🚀
+
+🔒 User Flag: 3b0873120-----b2be2f
+🔐 Root Flag: f34845dcb6-----5352124
+
+🔍 Enumeration:
+
+Discovered open ports using nmap.
+Web application enumeration using dirsearch.
+Identified Apache OFBiz web application.
+💡 Exploitation:
+
+Leveraged the OFBiz vulnerability (CVE-2023-49070) using exploit script.
+script : https://github.com/abdoghazy2015/ofbiz-CVE-2023-49070-RCE-POC.git
+Established a reverse shell on target.
+🕵️ Privilege Escalation:
+
+Located hashed passwords in OFBiz files.
+Decrypted passwords using custom Python script.
+script : https://raw.githubusercontent.com/itsWhiteNight/HackingLab/cb60466f4d37c9ab45a2e1c4cf9635dd3b8e34ca/HackTheBox/Machines/Bizness/MyScripts/my_python_script.py
+Escalated privileges to root.
+🚀 Key Learnings:
+
+Importance of thorough enumeration.
+Exploiting known vulnerabilities for initial access.
+Password management and decryption techniques.
+🙌 Shoutout to the HTB community and contributors! 🙌
+
+My Notes : https://github.com/architmadankar/HackTheBox/blob/main/bizness.htb/notes.txt
+
+#HackTheBox #CyberSecurity #InfoSec #PenetrationTesting #RootedMachine
+
