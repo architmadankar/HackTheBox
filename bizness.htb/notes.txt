@@ -155,16 +155,6 @@ c10001.dat  c13f41.dat	c41f0.dat  c8151.dat  cc0b1.dat
 c10011.dat  c13f51.dat	c4201.dat  c8161.dat  cc0c1.dat
 c1001.dat   c13f61.dat	c4210.dat  c8171.dat  cc0d1.dat
 
-cat README_DO_NOT_TOUCH_FILES.txt
-
-# *************************************************************************
-# ***              DO NOT TOUCH FILES IN THIS DIRECTORY!                ***
-# *** FILES IN THIS DIRECTORY ARE USED BY THE DERBY DATABASE TO STORE   *** 
-# *** USER AND SYSTEM DATA. EDITING, ADDING, OR DELETING FILES IN THIS  ***
-# *** DIRECTORY WILL CORRUPT THE ASSOCIATED DERBY DATABASE AND MAKE     ***
-# *** IT NON-RECOVERABLE.                                               ***
-# *************************************************************************$
-
 
 
 fbiz@bizness:/opt/ofbiz/runtime/data/derby/ofbiz/seg0$ grep -arin -o -E  '(\w+\W+){0,5}password(\W+\w+){0,5}' .
