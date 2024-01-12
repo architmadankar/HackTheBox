@@ -1,0 +1,74 @@
+Hey everyone,
+
+I wanted to share my recent journey on a box named DevVortex by Hack The Box, where I managed to escalate privileges from a Joomla web application to root access on the machine. Here's a step-by-step breakdown of the process:
+
+---
+
+
+Title: Journey from Joomla to Root: Exploiting CVEs and Privilege Escalation
+
+### Enumeration and Joomla Exploitation
+
+1. **Nmap Scan:**
+ - Identified open ports: 23, 25, 53, 80.
+ - Joomla version: 4.2.6.
+
+2. **Joomla Vulnerability Check:**
+ - Confirmed Joomla core was not vulnerable.
+
+3. **Admin Page Discovery:**
+ - Found the admin page at http://dev.devvortex.htb/administrator/.
+
+4. **Exploitation:**
+ - Utilized an existing exploit (https://lnkd.in/ggmuNaF7) for CVE-2023-23752.
+ - Retrieved Joomla database credentials: lewis/P4nth-------c0n##.
+
+### Database Exploration
+
+1. **MySQL Access:**
+ - Accessed the MySQL database using credentials.
+ - Found user information in `sd4fg_users` table.
+
+2. **Cracking Password Hash:**
+ - Cracked the hashed password: `tequieromucho`.
+
+### SSH Access
+
+1. **SSH Login:**
+ - Logged in as user `logan` with the cracked password.
+
+2. **User Flag:**
+ - Located and retrieved the user flag: `bdbcade-----------2328d`.
+
+### Privilege Escalation
+
+1. **Sudo Privileges:**
+ - Checked sudo privileges using `sudo -l`.
+ - Discovered that user `logan` could run `/usr/bin/apport-cli` as any user.
+
+2. **Exploiting CVE-2023-1326 (Apport):**
+ - Found an exploit for CVE-2023-1326: https://lnkd.in/gwqYW9AB.
+ - Executed the exploit to gain root access.
+
+### Root Access
+
+1. **Root Flag:**
+ - Accessed the root directory and retrieved the root flag: `1a9377e-----------6f9293e`.
+
+---
+
+This journey from a Joomla web application to root showcases the importance of thorough enumeration and exploitation of known vulnerabilities. Remember always to respect systems, follow ethical hacking guidelines, and share knowledge responsibly.
+
+Happy hacking!
+
+hashtag#hackthebox
+hashtag#JoomlaExploitation
+hashtag#CVE23752
+hashtag#WebAppSecurity
+hashtag#EthicalHacking
+hashtag#PrivilegeEscalation
+hashtag#CyberSecurity
+hashtag#RootAccess
+hashtag#InfoSecJourney
+hashtag#PenTesting
+hashtag#VulnerabilityExploitation
