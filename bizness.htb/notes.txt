@@ -144,7 +144,7 @@ ordChange="Y"/>
     <UserLoginSecurityGroup groupId="SUPER" userLoginId="@userLoginId@" fromDate="2001-01-01 12:00:00.0"/>
 </entity-engine-xml>$ 
 
-finding the salt
+finding the salted hash
 
 
 $ cd /opt/ofbiz/runtime/data/derby/ofbiz/seg0/
