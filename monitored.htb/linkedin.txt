@@ -1,0 +1,36 @@
+Successfully compromised Monitored machine, gaining initial access through Nagios API and escalating privileges via the npcd service. The journey involved thorough enumeration, API exploitation, and creative privilege escalation techniques, demonstrating the importance of comprehensive penetration testing methodologies.
+
+Description:
+
+Initial Enumeration:
+
+Discovered target: monitored.htb with IP 10.10.11.248.
+Identified services using Nmap:
+OpenSSH 8.4p1
+Apache httpd 2.4.56
+OpenLDAP 2.2.X - 2.3.X
+SSL/HTTP on port 443
+Attempted default login credentials for Nagios, but unsuccessful.
+LDAP Enumeration:
+
+Explored LDAP port (389) for user information.
+Extracted SNMP information, revealing some user-related details.
+API Authentication Bypass:
+
+Discovered API authentication vulnerability (CVE-2023-40931) allowing login via curl.
+Executed curl command to authenticate as user svc with password XjH7VCehowpR1xZB.
+Exploiting Nagios API:
+
+Utilized Nagios API to add a new user (sed) with admin privileges.
+Logged in as sed:sed and obtained the user flag.
+Command Execution via Nagios:
+
+Uploaded a bash reverse shell through Nagios configuration.
+Executed the shell via the Nagios web interface, leading to a shell as nagios.
+Privilege Escalation:
+
+Checked sudo privileges for nagios and found NOPASSWD commands.
+Exploited npcd service using a custom C reverse shell.
+Escalated privileges to root and obtained the root flag.
+
+notes:
