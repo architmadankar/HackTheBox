@@ -102,8 +102,8 @@ in documentation found that we can get old versions of files in minio
 └──╼ $mc cp --version-id=2b75346d-2a47-4203-ab09-3c9f878466b8 myminio/askyy/home_backup.tar.gz .
 ...ackup.tar.gz: 2.64 KiB / 2.64 KiB ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.29 KiB/s 0s
 
-found VAULT credentials
-
+found VAULT credentials 
+in .bashrc file
 
 export VAULT_API_ADDR="http://prd23-vault-internal.skyfall.htb"
 export VAULT_TOKEN="hvs.CAESIJlU9JMYEhOPYv4igdhm9PnZDrabYTobQ4Ymnlq1qY-LGh4KHGh2cy43OVRNMnZhakZDRlZGdGVzN09xYkxTQVE"
