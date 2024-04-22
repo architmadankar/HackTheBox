@@ -219,7 +219,7 @@ nc -lnvp 6969
 
 cd /home/dash
 $ cat user.txt
-be0e2debb78e2ce3e3cbf870a4471ee0
+f016daf0168db812aee96c31658ab825
 
 privilage escalation
 
