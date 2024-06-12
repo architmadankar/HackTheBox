@@ -1,0 +1,49 @@
+COMMENT_ID, OBJECT_INDEX, OBJECT_ID, OBJECT_NAME
+3, 0, 1, "\"1\""
+4, 0, 1, "\"1\""
+203, 0, 1, "\"1\""
+102, 0, NO_ID, MProjects
+102, 1, NO_ID, AllProjects
+103, 0, "project:project1|1|2", "version before: 1, version after: 2"
+104, 0, "auth:|1|2", "version before: 1, version after: 2"
+105, 0, AGENT_MANAGER, "\"Agent manager\""
+105, 1, _Root, "\"<Root project>\""
+106, 0, AGENT_MANAGER, "\"Agent manager\""
+106, 1, project1, "\"All-Projects\""
+107, 0, AGENT_MANAGER, "\"Agent manager\""
+107, 1, _Root, "\"<Root project>\""
+108, 0, AGENT_MANAGER, "\"Agent manager\""
+108, 1, project1, "\"All-Projects\""
+109, 0, PROJECT_DEVELOPER, "\"Project developer\""
+109, 1, project1, "\"All-Projects\""
+317, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+317, 1, NO_ID, modified
+316, 1, NO_ID, modified
+314, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+314, 1, NO_ID, modified
+315, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+315, 1, NO_ID, modified
+311, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+311, 1, NO_ID, modified
+312, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+312, 1, NO_ID, modified
+310, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+313, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+313, 1, NO_ID, modified
+308, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+316, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+320, 0, 1, "\"1\""
+309, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+310, 1, NO_ID, modified
+309, 1, NO_ID, modified
+308, 1, NO_ID, modified
+307, 1, NO_ID, modified
+307, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+306, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+306, 1, NO_ID, modified
+304, 1, NO_ID, "\"global\""
+304, 0, SYSTEM_ADMIN, "\"System administrator\""
+305, 0, NO_ID, /data/teamcity_server/datadir/config/internal.properties
+305, 1, NO_ID, modified
+302, 0, SYSTEM_ADMIN, "\"System administrator\""
+302, 1, NO_ID, "\"global\""

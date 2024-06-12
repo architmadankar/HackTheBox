@@ -1,0 +1,5 @@
+ID, USERNAME, PASSWORD, NAME, EMAIL, LAST_LOGIN_TIMESTAMP, ALGORITHM
+1, admin, $2a$07$5mTp3jjkTVORmPoGxaJAZukcgfDsHjWB.kD2f0JBm4TiC0ozUWTFy, John, john@runner.htb, 1717574675203, BCRYPT
+2, matthew, $2a$07$q.m8WQP8niXODv55lJVovOmxGtg6K/YPHbD48/JQsdGLulmeVo.Em, Matthew, matthew@runner.htb, 1709150421438, BCRYPT
+11, admin.4acz, $2a$07$NxG6JInFkRAo38v8g4DJ2OhQjIay08AXIH9AJMGntHHOiVmr.MzUa, , admin.4aCz@lol.omg, 1717575040972, BCRYPT
+12, admin.pnrd, $2a$07$SL9TTkI/Rr2NB0kLJvj4vuQotP2pbPreheKjfAgM6ZZixqA6ckx5O, , admin.PnRd@lol.omg, , BCRYPT

