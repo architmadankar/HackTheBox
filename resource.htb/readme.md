@@ -41,8 +41,11 @@ https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization
 
 lets upload pentestmonkey's rev shell 
 
+<details>
+<summary>PHP Reverse Shell</summary>
+<br>
 
-```php
+```bash
 //shell.php
   <?php
   // php-reverse-shell - A Reverse Shell implementation in PHP
@@ -193,6 +196,8 @@ lets upload pentestmonkey's rev shell
 
   ?> 
 ```
+</details>
+
 make a zip file of shell.php
 
 and upload as a ticket 
@@ -349,7 +354,7 @@ AND GOT THE USER FLAG
 
 inside the user dir we have a file sign_key_api.sh 
 
-```php
+```sh
 #!/bin/bash
 
 usage () {
@@ -461,9 +466,16 @@ ssh zzinter@resource.htb -p 2222 -i sed -o CertificateFile=zzinter.cert
 checking permissions with sudo -l 
 found we can execute  `/opt/sign_key.sh` file as root
  ![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-35-52.png)
+ 
  exploring the file 
  
- ```zzinter@ssg:~$ cat /opt/sign_key.sh ```
+ ```
+ zzinter@ssg:~$ cat /opt/sign_key.sh
+ ```
+<details>
+  <summary>sign_key.sh</summary>
+  <br>
+  
  ```bash
 #!/bin/bash
 
@@ -526,7 +538,7 @@ fi
 
 ssh-keygen -s "$ca_file" -z "$serial" -I "$username" -V -1w:forever -n "$principals" "$public_key_name"
 ```
-
+</details>
 
 so basically this file can real CA certificate file  and if the CA file matches the root CA file it will return error code 1
 
@@ -560,7 +572,10 @@ But in the second statement 'Hell' is present the condition will be executed
 
 wrote a python script to return the root CA certificate 
 
-
+<details>
+<summary> Exploit Code - exploit.py </summary>
+  <br>
+  
 ```python
 import subprocess
 import string
@@ -616,6 +631,9 @@ if __name__ == '__main__':
     else:
         exit("\n\nFail\n") 
 ```
+
+</details>
+
 ![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-56-23.png)
 
 the exploit will take some time to bruteforce key file
