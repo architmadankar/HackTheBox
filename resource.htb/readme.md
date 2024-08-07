@@ -279,9 +279,11 @@ and BAM!! we got the user ID and PASS in this
           }
         },
 ```
+
+logging in with the user:pass ```msainristil:82yards2closeit```
 ![user pwn msainristil](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/ssh-user.png)
 
-```msainristil:82yards2closeit```
+
 
 Still no user flag 
 
