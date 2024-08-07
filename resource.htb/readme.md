@@ -229,7 +229,10 @@ zzinter
 
 exploring the web dir in /var/www/itrc/
  found db.php with mysql db user pass
-
+<details>
+<summary>db.php</summary>
+<br>
+  
 ```php
 cat db.php
 <?php
@@ -246,7 +249,7 @@ try {
 }$ 
 $
 ```
-
+</details>
 
 getting error while logging with jj
 ```
