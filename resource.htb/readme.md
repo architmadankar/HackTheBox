@@ -677,3 +677,6 @@ ANDDD WE GOT THE ROOT FLAGGG!!!!!
 
 ## Conclusion
 Working through the 'Resource.HTB' machine was a challenging and rewarding experience that significantly enhanced my skills, pwning the 'Resource.HTB' machine took considerable time and effort, but the experience was invaluable. It taught me patience, persistence, and the necessity of a methodical approach to problem-solving in cybersecurity
+
+
+![](https://github.com/architmadankar/HackTheBox/blob/b31ee3c8ac7079127d8118680b434c1c30b771aa/resource.htb/ss/image.png)
