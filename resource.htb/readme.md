@@ -251,7 +251,8 @@ ERROR 2002 (HY000): Can't connect to local server through socket '/run/mysqld/my
 ```
 
 so someone did a reset to the machine and i found there are two zips but i just uploaded my zip 
-downloaded the zip file and explored it 
+
+- downloaded the zip file and explored it 
 
 `c2f4813259cc57fab36b311c5058cf031cb6eb51.zip`
 
