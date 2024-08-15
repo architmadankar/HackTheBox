@@ -1,0 +1,25 @@
+
+🚀 **HackTheBox Seasonal: Sea 🌊**
+
+Just wrapped up an exciting HackTheBox challenge, tackling the **Sea.HTB** machine! This was an awesome journey, from recon to privilege escalation, and I’m excited to share the highlights:
+
+🔍 **Reconnaissance:**
+- Used **Rustscan** to identify open ports—SSH and HTTP were exposed.
+- **WhatWeb** revealed that the site runs on PHP and uses cookies for session management.
+- Employed **FFUF** to perform directory enumeration, discovering some crucial files in the `/themes/bike/` directory.
+
+💡 **Exploitation:**
+- Found an exploit for **WonderCMS (CVE-2023-41425)** and successfully executed it to gain a reverse shell. 
+- Explored the server with **Linpeas** and discovered a bcrypt hash in the `database.js` file, which I cracked using **Hashcat** to obtain credentials.
+
+🔑 **Privilege Escalation:**
+- Gained SSH access as user `amay` and discovered a web server running on port 8080.
+- Created an SSH tunnel to explore the web server, where I found a System Monitor page that allowed me to read log files.
+- Finally, used a custom payload to escalate privileges and capture the root flag! 🏴
+
+This challenge was a great opportunity to sharpen my skills in reconnaissance, web exploitation, and privilege escalation. Every step was a learning experience, and I’m looking forward to tackling more challenges like this!
+
+
+WriteUp : https://github.com/architmadankar/HackTheBox/blob/main/sea.htb/readme.md
+
+#CyberSecurity #EthicalHacking #HackTheBox #PenTesting #CTF #InfoSec
