@@ -63,6 +63,8 @@ Connection: keep-alive
 
 The ssrf works, download the dll file by requesting response in browser
 
+#### Decompiling DLL File
+
 After Downloading the DLL file in your machine browse it using Jetbrains DotPeek
 
 ![image](https://github.com/user-attachments/assets/f60f42b1-d082-425b-a254-e82e586258d1)
