@@ -43,11 +43,10 @@ Took a hint from official HackTheBox discussion thread
 - on GET /_framework/blazor.boot.json are all blazor dlls,
 via /_framework/InternaLantern.dll you can download them
 
-seems to be blazor .Net decompiling again
 ```
 https://www.exploit-db.com/raw/51111
 ```
-- putting the hint on burp and intercepting the response
+- putting the hint on burp and intercept the response
 ```
 GET /_framework/InternaLantern.dll HTTP/1.1
 Host: lantern.htb
