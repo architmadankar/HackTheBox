@@ -62,3 +62,24 @@ Connection: keep-alive
 ```
 
 The ssrf works, download the dll file by requesting response in browser
+
+After Downloading the DLL file in your machine browse it using Jetbrains DotPeek
+
+![image](https://github.com/user-attachments/assets/f60f42b1-d082-425b-a254-e82e586258d1)
+
+Here in "InternaLanding.Pages/Internal" you will find base64 encoded employee details, convert it into text using [CyberChef](https://gchq.github.io/CyberChef)  
+
+```base64
+"U3lzdGVtIGFkbWluaXN0cmF0b3IsIEZpcnN0IGRheTogMjEvMS8yMDI0LCBJbml0aWFsIGNyZWRlbnRpYWxzIGFkbWluOkFKYkZBX1FAOTI1cDlhcCMyMi4gQXNrIHRvIGNoYW5nZSBhZnRlciBmaXJzdCBsb2dpbiE="
+```
+
+After decoding
+
+```txt
+System administrator, First day: 21/1/2024, Initial credentials admin:AJbFA_Q@925p9ap#22. Ask to change after first login!
+```
+- Got the credentials
+```
+admin:AJbFA_Q@925p9ap#22.
+```
+
