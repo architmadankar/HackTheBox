@@ -104,7 +104,7 @@ In the Upload content section we can upload any type of file
 
 Will create and upload a tcp reverse shell and lets see it executes or not
 
-#### TCP DLL Reverse Shell
+#### Exploting .NET Components
 
 install dotnet 6
 
