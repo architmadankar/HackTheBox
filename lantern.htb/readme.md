@@ -106,10 +106,14 @@ Will create and upload a tcp reverse shell and lets see it executes or not
 
 #### TCP DLL Reverse Shell
 
-- Create a new folder named shell and use the following commands
+install dotnet 6
 
 ```bash
-dotnet new console
+sudo apt install dotnet-sdk-6
+```
+
+```bash
+dotnet new console -c sedlyf
 ```
 ```bash
  dotnet add package Microsoft.AspNetCore.Components --version 6.0.0
@@ -147,7 +151,7 @@ namespace sedlyf
 dotnet build sedlyf.csproj -c Release
 ```
 
-the DLL file will be saved in `bin/Release/net8.0/shell.dll`
+the DLL file will be saved in `bin/Release/net8.0/sedlyf.dll`
 
 #### Exploiting     
 
