@@ -55,7 +55,7 @@ Information: WebSocket connected to ws://lantern.htb:3000/_blazor?id=zuxDM5hIB0l
 - Found a Blazor exploit Burp Suite extension [here](https://www.aon.com/cyber-solutions/aon_cyber_labs/new_burp_suite_extension_blazortrafficprocessor/).
 
 Based on HTB Forum hints:
-- SSRF on port 80:3000.
+- SSRF on port 80:3000. [Skipper Proxy](https://www.exploit-db.com/raw/51111)
 - Accessing `/_framework/blazor.boot.json` reveals all Blazor DLLs.
 - Download `InternaLantern.dll` through SSRF.
 
