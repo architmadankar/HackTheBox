@@ -75,7 +75,7 @@ Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
 Connection: keep-alive
 ```
 
-Successfully downloaded the DLL file.
+Successfully downloaded the DLL file by requesting response in browser.
 
 ### Decompiling DLL File
 
