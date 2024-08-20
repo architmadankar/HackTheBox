@@ -1,6 +1,6 @@
 # Lantern.htb 
 
-| HackTheBox    | Difficulty | Week   | Season   |
+| Machine    | Difficulty | Week   | Season   |
 |---------------|------------|--------|----------|
 | Lantern.HTB   | Hard       | Week 3 | Season 6 |
 
