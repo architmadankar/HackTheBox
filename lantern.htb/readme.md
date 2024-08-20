@@ -1,6 +1,6 @@
 # Lantern.htb
 
-HackTheBox | Medium | Week 3 | Season 6 
+HackTheBox | Hard | Week 3 | Season 6 
 
 ## Recon
 
