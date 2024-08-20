@@ -102,8 +102,6 @@ Using these credentials in http://lantern.htb:3000/
 In the Upload content section we can upload any type of file
 ![alt text](image-4.png)
 
-Will create and upload a tcp reverse shell and lets see it executes or not
-
 #### Exploting .NET Components
 
 install dotnet 6
