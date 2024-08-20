@@ -1,0 +1,12 @@
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.csproj.AssemblyReference.cache
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.GeneratedMSBuildEditorConfig.editorconfig
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.AssemblyInfoInputs.cache
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.AssemblyInfo.cs
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.csproj.CoreCompileInputs.cache
+/home/sed/HackTheBox/lantern.htb/sedlyf/bin/Release/net6.0/sedlyf.deps.json
+/home/sed/HackTheBox/lantern.htb/sedlyf/bin/Release/net6.0/sedlyf.dll
+/home/sed/HackTheBox/lantern.htb/sedlyf/bin/Release/net6.0/ref/sedlyf.dll
+/home/sed/HackTheBox/lantern.htb/sedlyf/bin/Release/net6.0/sedlyf.pdb
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.dll
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/ref/sedlyf.dll
+/home/sed/HackTheBox/lantern.htb/sedlyf/obj/Release/net6.0/sedlyf.pdb
