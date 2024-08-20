@@ -30,6 +30,9 @@ whatweb http://lantern.htb/ -v
 
 - The site appears to be an IT company where users can upload resumes at `http://lantern.htb/vacancies`.
 - `http://lantern.htb:3000` hosts a LanternLogin page.
+
++ [Skipper Proxy ExploitDB](https://www.exploit-db.com/raw/51111)
+
 <br>
 
 ![alt text](image-1.png)
