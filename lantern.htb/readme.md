@@ -151,7 +151,7 @@ namespace sedlyf
 dotnet build sedlyf.csproj -c Release
 ```
 
-the DLL file will be saved in `bin/Release/net8.0/sedlyf.dll`
+the DLL file will be saved in `bin/Release/net6.0/sedlyf.dll`
 
 #### Exploiting     
 
