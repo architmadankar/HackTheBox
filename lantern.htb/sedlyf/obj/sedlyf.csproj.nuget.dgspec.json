@@ -1,0 +1,72 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/sed/HackTheBox/lantern.htb/sedlyf/sedlyf.csproj": {}
+  },
+  "projects": {
+    "/home/sed/HackTheBox/lantern.htb/sedlyf/sedlyf.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/sed/HackTheBox/lantern.htb/sedlyf/sedlyf.csproj",
+        "projectName": "sedlyf",
+        "projectPath": "/home/sed/HackTheBox/lantern.htb/sedlyf/sedlyf.csproj",
+        "packagesPath": "/home/sed/.nuget/packages/",
+        "outputPath": "/home/sed/HackTheBox/lantern.htb/sedlyf/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/sed/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Components": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.32, 6.0.32]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.132/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
