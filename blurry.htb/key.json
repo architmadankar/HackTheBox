@@ -1,0 +1,10 @@
+api { 
+    web_server: http://app.blurry.htb
+    api_server: http://api.blurry.htb
+    files_server: http://files.blurry.htb
+    # sed
+    credentials {
+        "access_key" = "UB49RUR4JTGVYC267JDG"
+        "secret_key"  = "wn5WKqgcj2UN4tN0Oebe0pG4r4HRfLzRcbZLewm62cTCwLbZej"
+    }
+}

@@ -1,0 +1,15 @@
+# Dirsearch started Sat Sep  7 07:07:06 2024 as: /usr/lib/python3/dist-packages/dirsearch/dirsearch.py -u http://10.13.37.14/ -x 404,500,429,403,405
+
+200   141B   http://10.13.37.14/.git/config
+200    33B   http://10.13.37.14/.git/COMMIT_EDITMSG
+200    73B   http://10.13.37.14/.git/description
+200    23B   http://10.13.37.14/.git/HEAD
+200     4KB  http://10.13.37.14/.git/index
+200   476B   http://10.13.37.14/.git/logs/HEAD
+200   240B   http://10.13.37.14/.git/info/exclude
+200   476B   http://10.13.37.14/.git/logs/refs/heads/master
+200    41B   http://10.13.37.14/.git/refs/heads/master
+200     2KB  http://10.13.37.14/login
+302   218B   http://10.13.37.14/logout    -> REDIRECTS TO: http://10.13.37.14/login
+302   250B   http://10.13.37.14/profile    -> REDIRECTS TO: http://10.13.37.14/login?next=%2Fprofile
+200     2KB  http://10.13.37.14/signup
